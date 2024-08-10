@@ -40,8 +40,8 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     private void initializeTableModels() {
         modelSanPhansd = (DefaultTableModel) tblSanPhansd.getModel();
         modelSanPHamksd = (DefaultTableModel) tblSanPHamksd.getModel();
-        modelSanPhansd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Số lượng", "Loại"});
-        modelSanPHamksd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Số lượng", "Loại"});
+        modelSanPhansd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Loại"});
+        modelSanPHamksd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Loại"});
     }
 
     private void loadSanPhamData() {
@@ -68,7 +68,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
                 rs.getString("ID_Sanpham"),
                 rs.getString("TenSP"),
                 rs.getInt("Gia"),
-                rs.getString("ID_SoLuongSP"),
+//                rs.getString("ID_SoLuongSP"),
                 rs.getString("ID_LoaiSP")
             });
         }
@@ -142,10 +142,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         txtGia = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        btnStart = new javax.swing.JButton();
-        btnPrev = new javax.swing.JButton();
-        btnnext = new javax.swing.JButton();
-        btnLast = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         rdoksd = new javax.swing.JRadioButton();
         rdosd = new javax.swing.JRadioButton();
@@ -195,14 +191,14 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 979, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1054, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 115, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 16, Short.MAX_VALUE))
         );
 
         tabs.addTab("Sản Phẩm sử dụng", jPanel2);
@@ -237,13 +233,13 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
         );
 
         tabs.addTab("Sản Phẩm không sử dụng", jPanel3);
 
         jPanel1.add(tabs);
-        tabs.setBounds(10, 470, 1060, 300);
+        tabs.setBounds(10, 450, 1060, 220);
 
         jPanel4.setBackground(new java.awt.Color(241, 241, 241));
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.MatteBorder(null), "Tìm kiếm(Tên hoặc Mã)", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
@@ -272,7 +268,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         );
 
         jPanel1.add(jPanel4);
-        jPanel4.setBounds(10, 400, 0, 0);
+        jPanel4.setBounds(10, 370, 499, 58);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setText("Mã sản phẩm");
@@ -357,22 +353,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         jLabel6.setText("Số lượng:");
         jPanel1.add(jLabel6);
         jLabel6.setBounds(600, 130, 70, 17);
-
-        btnStart.setText("|<");
-        jPanel1.add(btnStart);
-        btnStart.setBounds(690, 430, 61, 31);
-
-        btnPrev.setText("<<");
-        jPanel1.add(btnPrev);
-        btnPrev.setBounds(760, 430, 61, 32);
-
-        btnnext.setText(">>");
-        jPanel1.add(btnnext);
-        btnnext.setBounds(830, 430, 61, 34);
-
-        btnLast.setText(">|");
-        jPanel1.add(btnLast);
-        btnLast.setBounds(900, 430, 61, 34);
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Trạng thái");
@@ -465,10 +445,9 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1075, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(0, 12, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -792,14 +771,10 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLamMoi;
-    private javax.swing.JButton btnLast;
-    private javax.swing.JButton btnPrev;
-    private javax.swing.JButton btnStart;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;
     private javax.swing.JButton btnloaidouong;
-    private javax.swing.JButton btnnext;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
