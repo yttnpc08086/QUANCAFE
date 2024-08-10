@@ -5,16 +5,17 @@
 package com.mycompany.views;
 
 import com.mycompany.Helper.ConnectUtil;
-import java.awt.Image;
 import java.io.File;
-import java.sql.ResultSet;
 import javax.swing.table.DefaultTableModel;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableRowSorter;
 
@@ -25,7 +26,7 @@ import javax.swing.table.TableRowSorter;
 public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
     private DefaultTableModel modelSanPhansd;
-    private DefaultTableModel modelSanPhamksd;
+    private DefaultTableModel modelSanPHamksd;
 
     /**
      * Creates new form QuanLySanPhamJPanel
@@ -34,84 +35,81 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         initComponents();
         initializeTableModels();
         loadSanPhamData();
-
-        btnDonViDouong.addActionListener(e -> openQLDonViDoUongDialog());
-        btnThemDo.addActionListener(e -> openQLDoUongDialog());
-//        btnThanhToan.addActionListener(e -> openChucNangThanhToanJDialog());
-    }
-
-    private void openQLDonViDoUongDialog() {
-        // Tạo và hiển thị cửa sổ QLDonViDoUongJDialog
-        QLDonViDoUongJDialog dialog = new QLDonViDoUongJDialog((JFrame) SwingUtilities.getWindowAncestor(this), true);
-        dialog.setVisible(true);
-    }
-
-    private void openQLDoUongDialog() {
-        QLDoUongJDialog dialog = new QLDoUongJDialog((JFrame) SwingUtilities.getWindowAncestor(this), true);
-        dialog.setVisible(true);
     }
 
     private void initializeTableModels() {
         modelSanPhansd = (DefaultTableModel) tblSanPhansd.getModel();
-        modelSanPhamksd = (DefaultTableModel) tblSanPHamksd.getModel();
-        // Set the column names to match the SQL table columns
-        modelSanPhansd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Đơn Vị", "Loại", "Hình", "Trạng Thái"});
-        modelSanPhamksd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Đơn Vị", "Loại", "Hình", "Trạng Thái"});
+        modelSanPHamksd = (DefaultTableModel) tblSanPHamksd.getModel();
+        modelSanPhansd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Số lượng", "Loại"});
+        modelSanPHamksd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Số lượng", "Loại"});
     }
 
-//    private void loadSanPhamData() {
-//        try {
-//            String querySanPhansd = "SELECT * FROM SanPham WHERE Trangthai = 1"; // Active products
-//            ResultSet rsSanPhansd = ConnectUtil.query(querySanPhansd);
-//            populateTable(modelSanPhansd, rsSanPhansd);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-//        }
-//    }
     private void loadSanPhamData() {
-        loadSanPhamDataByStatus(1); // Load data with "Sử dụng" status
-        loadSanPhamDataByStatus(0); // Load data with "Không sử dụng" status
-    }
-
-    private void loadSanPhamDataByStatus(int status) {
-        DefaultTableModel model = (status == 1) ? modelSanPhansd : modelSanPhamksd;
-        String querySanPhansd = "SELECT * FROM SanPham WHERE Trangthai = ?";
         try {
-            ResultSet rsSanPhansd = ConnectUtil.query(querySanPhansd, status);
-            populateTable(model, rsSanPhansd);
+            // Load data for tblSanPhansd (active products)
+            String querySanPhansd = "SELECT * FROM SanPham WHERE Trangthai = 1"; // Active products
+            ResultSet rsSanPhansd = ConnectUtil.query(querySanPhansd);
+            populateTable(modelSanPhansd, rsSanPhansd);
+
+            // Load data for tblSanPHamksd (inactive products)
+            String querySanPHamksd = "SELECT * FROM SanPham WHERE Trangthai = 0"; // Inactive products
+            ResultSet rsSanPHamksd = ConnectUtil.query(querySanPHamksd);
+            populateTable(modelSanPHamksd, rsSanPHamksd);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void populateTable(DefaultTableModel model, ResultSet rs) throws Exception {
-        model.setRowCount(0);
+    private void populateTable(DefaultTableModel model, ResultSet rs) throws SQLException {
+        model.setRowCount(0); // Clear existing rows
         while (rs.next()) {
-            String imagePath = rs.getString("Hinh");
-            ImageIcon imageIcon = new ImageIcon(imagePath);
-
-            // Đảm bảo kích thước hình ảnh phù hợp với cột
-            Image image = imageIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
-            imageIcon = new ImageIcon(image);
-
             model.addRow(new Object[]{
                 rs.getString("ID_Sanpham"),
                 rs.getString("TenSP"),
                 rs.getInt("Gia"),
-                rs.getString("ID_DonviSP"),
-                rs.getString("ID_LoaiSP"),
-                imageIcon, // Hiển thị hình ảnh trong cột
-                rs.getInt("Trangthai") == 1 ? "Sử dụng" : "Không sử dụng"
+                rs.getString("ID_SoLuongSP"),
+                rs.getString("ID_LoaiSP")
             });
         }
     }
 
     private void filterTable(String query) {
-        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(modelSanPhansd);
+        DefaultTableModel model = (DefaultTableModel) tblSanPhansd.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(model);
         tblSanPhansd.setRowSorter(tr);
         tr.setRowFilter(RowFilter.regexFilter("(?i)" + query));
+    }
+
+    private void filterTableByDate(String startDate, String endDate) {
+        DefaultTableModel model = (DefaultTableModel) tblSanPhansd.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(model);
+        tblSanPhansd.setRowSorter(tr);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            Date start = dateFormat.parse(startDate);
+            Date end = dateFormat.parse(endDate);
+
+            RowFilter<DefaultTableModel, Object> dateFilter = new RowFilter<DefaultTableModel, Object>() {
+                @Override
+                public boolean include(Entry<? extends DefaultTableModel, ? extends Object> entry) {
+                    try {
+                        String dateString = (String) entry.getValue(2); // Giả sử cột 3 chứa ngày tháng
+                        Date date = dateFormat.parse(dateString);
+                        return date.compareTo(start) >= 0 && date.compareTo(end) <= 0;
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            };
+
+            tr.setRowFilter(dateFilter);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -125,6 +123,13 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
+        tabs = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblSanPhansd = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblSanPHamksd = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         txtTimKiem = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -137,30 +142,108 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         txtGia = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        btnStart = new javax.swing.JButton();
+        btnPrev = new javax.swing.JButton();
+        btnnext = new javax.swing.JButton();
+        btnLast = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         rdoksd = new javax.swing.JRadioButton();
         rdosd = new javax.swing.JRadioButton();
         btnThem = new javax.swing.JButton();
         btnXoa = new javax.swing.JButton();
         btnSua = new javax.swing.JButton();
-        tbnLamMoi = new javax.swing.JButton();
+        btnLamMoi = new javax.swing.JButton();
+        btnloaidouong = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtdonvi = new javax.swing.JTextField();
-        txtloai = new javax.swing.JTextField();
-        tabs = new javax.swing.JTabbedPane();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblSanPhansd = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblSanPHamksd = new javax.swing.JTable();
-        btnThemDo = new javax.swing.JButton();
-        btnDonViDouong = new javax.swing.JButton();
+        txtDoUong = new javax.swing.JTextField();
+        txtSoLuong = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(241, 241, 241));
 
         jPanel1.setBackground(new java.awt.Color(241, 241, 241));
         jPanel1.setLayout(null);
+
+        tabs.setPreferredSize(new java.awt.Dimension(1000, 200));
+        tabs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabsMouseClicked(evt);
+            }
+        });
+
+        jPanel2.setPreferredSize(new java.awt.Dimension(100, 200));
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(1000, 200));
+
+        tblSanPhansd.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Mã SP", "Tên sản phẩm ", "Loại đồ uống ", "Giá", "Số lượng", "Trạng thái", "Hinh"
+            }
+        ));
+        tblSanPhansd.setPreferredSize(new java.awt.Dimension(1000, 200));
+        tblSanPhansd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSanPhansdMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblSanPhansd);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 979, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 115, Short.MAX_VALUE))
+        );
+
+        tabs.addTab("Sản Phẩm sử dụng", jPanel2);
+
+        jPanel3.setPreferredSize(new java.awt.Dimension(100, 200));
+
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(1000, 200));
+
+        tblSanPHamksd.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Tên sản phẩm", "Loại đồ uống ", "Giá", "Số lượng", "Trạng thái"
+            }
+        ));
+        tblSanPHamksd.setPreferredSize(new java.awt.Dimension(1000, 200));
+        tblSanPHamksd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSanPHamksdMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tblSanPHamksd);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1018, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 42, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+        );
+
+        tabs.addTab("Sản Phẩm không sử dụng", jPanel3);
+
+        jPanel1.add(tabs);
+        tabs.setBounds(10, 470, 1060, 300);
 
         jPanel4.setBackground(new java.awt.Color(241, 241, 241));
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.MatteBorder(null), "Tìm kiếm(Tên hoặc Mã)", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
@@ -271,9 +354,25 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         jLabel5.setBounds(600, 310, 60, 17);
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel6.setText("Đơn vị");
+        jLabel6.setText("Số lượng:");
         jPanel1.add(jLabel6);
         jLabel6.setBounds(600, 130, 70, 17);
+
+        btnStart.setText("|<");
+        jPanel1.add(btnStart);
+        btnStart.setBounds(690, 430, 61, 31);
+
+        btnPrev.setText("<<");
+        jPanel1.add(btnPrev);
+        btnPrev.setBounds(760, 430, 61, 32);
+
+        btnnext.setText(">>");
+        jPanel1.add(btnnext);
+        btnnext.setBounds(830, 430, 61, 34);
+
+        btnLast.setText(">|");
+        jPanel1.add(btnLast);
+        btnLast.setBounds(900, 430, 61, 34);
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Trạng thái");
@@ -283,11 +382,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         rdoksd.setBackground(new java.awt.Color(241, 241, 241));
         buttonGroup1.add(rdoksd);
         rdoksd.setText("Không sử dụng");
-        rdoksd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdoksdActionPerformed(evt);
-            }
-        });
         jPanel1.add(rdoksd);
         rdoksd.setBounds(600, 240, 110, 21);
 
@@ -295,11 +389,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         buttonGroup1.add(rdosd);
         rdosd.setSelected(true);
         rdosd.setText("Sử dụng");
-        rdosd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdosdActionPerformed(evt);
-            }
-        });
         jPanel1.add(rdosd);
         rdosd.setBounds(720, 240, 90, 21);
 
@@ -312,7 +401,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnThem);
-        btnThem.setBounds(960, 150, 101, 34);
+        btnThem.setBounds(880, 150, 101, 34);
 
         btnXoa.setFont(new java.awt.Font("Cambria", 0, 18)); // NOI18N
         btnXoa.setText("Xóa");
@@ -323,7 +412,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnXoa);
-        btnXoa.setBounds(960, 270, 101, 34);
+        btnXoa.setBounds(880, 260, 101, 34);
 
         btnSua.setFont(new java.awt.Font("Cambria", 0, 18)); // NOI18N
         btnSua.setText("Sửa");
@@ -333,17 +422,27 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnSua);
-        btnSua.setBounds(960, 210, 101, 34);
+        btnSua.setBounds(880, 200, 101, 34);
 
-        tbnLamMoi.setFont(new java.awt.Font("Cambria", 0, 18)); // NOI18N
-        tbnLamMoi.setText("Làm mới");
-        tbnLamMoi.addActionListener(new java.awt.event.ActionListener() {
+        btnLamMoi.setFont(new java.awt.Font("Cambria", 0, 18)); // NOI18N
+        btnLamMoi.setText("Làm mới");
+        btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tbnLamMoiActionPerformed(evt);
+                btnLamMoiActionPerformed(evt);
             }
         });
-        jPanel1.add(tbnLamMoi);
-        tbnLamMoi.setBounds(960, 330, 99, 34);
+        jPanel1.add(btnLamMoi);
+        btnLamMoi.setBounds(880, 320, 99, 34);
+
+        btnloaidouong.setBackground(new java.awt.Color(225, 193, 144));
+        btnloaidouong.setText("+");
+        btnloaidouong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnloaidouongActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnloaidouong);
+        btnloaidouong.setBounds(310, 330, 30, 30);
 
         jLabel1.setBackground(new java.awt.Color(255, 102, 0));
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
@@ -351,129 +450,93 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         jLabel1.setText("QUẢN LÝ ĐỒ UỐNG");
         jPanel1.add(jLabel1);
         jLabel1.setBounds(330, 20, 380, 44);
-        jPanel1.add(txtdonvi);
-        txtdonvi.setBounds(600, 150, 160, 30);
-        jPanel1.add(txtloai);
-        txtloai.setBounds(310, 340, 190, 30);
+        jPanel1.add(txtDoUong);
+        txtDoUong.setBounds(340, 330, 200, 30);
 
-        tabs.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tabsMouseClicked(evt);
-            }
-        });
-
-        tblSanPhansd.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Mã SP", "Tên sản phẩm ", "Loại đồ uống ", "Giá", "Đợn vị", "Hình ảnh"
-            }
-        ));
-        tblSanPhansd.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblSanPhansdMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(tblSanPhansd);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 93, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-        );
-
-        tabs.addTab("Sản Phẩm sử dụng", jPanel2);
-
-        tblSanPHamksd.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Mã SP", "Tên sản phẩm", "Loại đồ uống ", "Giá", "Đơn vị", "Hình ảnh"
-            }
-        ));
-        tblSanPHamksd.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblSanPHamksdMouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(tblSanPHamksd);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 88, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-        );
-
-        tabs.addTab("Sản Phẩm không sử dụng", jPanel3);
-
-        jPanel1.add(tabs);
-        tabs.setBounds(10, 460, 1220, 300);
-
-        btnThemDo.setBackground(new java.awt.Color(0, 255, 0));
-        btnThemDo.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        btnThemDo.setText("Chọn đồ uống");
-        btnThemDo.setBorder(null);
-        btnThemDo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnThemDoMouseClicked(evt);
-            }
-        });
-        btnThemDo.addActionListener(new java.awt.event.ActionListener() {
+        txtSoLuong.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnThemDoActionPerformed(evt);
+                txtSoLuongActionPerformed(evt);
             }
         });
-        jPanel1.add(btnThemDo);
-        btnThemDo.setBounds(760, 30, 160, 40);
-
-        btnDonViDouong.setBackground(new java.awt.Color(0, 255, 0));
-        btnDonViDouong.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        btnDonViDouong.setText("Chọn Đơn vị đồ uống");
-        btnDonViDouong.setBorder(null);
-        btnDonViDouong.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnDonViDouongMouseClicked(evt);
-            }
-        });
-        btnDonViDouong.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDonViDouongActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btnDonViDouong);
-        btnDonViDouong.setBounds(760, 80, 160, 40);
+        jPanel1.add(txtSoLuong);
+        txtSoLuong.setBounds(600, 152, 230, 30);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 12, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1075, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 763, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 684, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 15, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tblSanPhansdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSanPhansdMouseClicked
+        // TODO add your handling code here:
+        int row = tblSanPhansd.getSelectedRow();
+        if (row >= 0) {
+            txtMaSP.setText(tblSanPhansd.getValueAt(row, 0).toString());
+            txtTenSP.setText(tblSanPhansd.getValueAt(row, 1).toString());
+
+            // Assume txtDoUong is a JTextField instead of JComboBox
+            String doUongValue = tblSanPhansd.getValueAt(row, 4).toString().trim();
+            txtDoUong.setText(doUongValue);
+
+            // Assume txtDV is also a JTextField
+            String dvValue = tblSanPhansd.getValueAt(row, 3).toString().trim();
+            txtSoLuong.setText(dvValue);
+
+            txtGia.setText(tblSanPhansd.getValueAt(row, 2).toString());
+
+            String status = tblSanPhansd.getValueAt(row, 5).toString().trim();
+            if (status.equals("Sử dụng")) {
+                rdosd.setSelected(true);
+            } else {
+                rdoksd.setSelected(true);
+            }
+        }
+    }//GEN-LAST:event_tblSanPhansdMouseClicked
+
+    private void tblSanPHamksdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSanPHamksdMouseClicked
+        // TODO add your handling code here:
+        int selectedRow = tblSanPHamksd.getSelectedRow();
+
+        // If a valid row is selected
+        if (selectedRow != -1) {
+            // Assuming the table model is set up in a way that matches the database columns
+            String maSP = tblSanPHamksd.getValueAt(selectedRow, 0).toString();
+            String tenSP = tblSanPHamksd.getValueAt(selectedRow, 1).toString();
+            int gia = Integer.parseInt(tblSanPHamksd.getValueAt(selectedRow, 2).toString());
+            String soluong = tblSanPHamksd.getValueAt(selectedRow, 3).toString();
+            String loai = tblSanPHamksd.getValueAt(selectedRow, 4).toString();
+            int trangThai = Integer.parseInt(tblSanPHamksd.getValueAt(selectedRow, 5).toString());
+
+            // Set these values into the form fields
+            txtMaSP.setText(maSP);
+            txtTenSP.setText(tenSP);
+            txtGia.setText(String.valueOf(gia));
+            txtSoLuong.setText(soluong);
+            txtDoUong.setText(loai);
+
+            // Set radio button status
+            if (trangThai == 1) {
+                rdosd.setSelected(true);
+            } else {
+                rdoksd.setSelected(true);
+            }
+        }
+    }//GEN-LAST:event_tblSanPHamksdMouseClicked
+
+    private void tabsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabsMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tabsMouseClicked
 
     private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
         // TODO add your handling code here:
@@ -485,11 +548,30 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tblSanPhansd.getModel();
         TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(model);
         tblSanPhansd.setRowSorter(tr);
+
+        // Sử dụng RowFilter để lọc theo mã sản phẩm (ID_Sanpham)
         tr.setRowFilter(RowFilter.regexFilter("(?i)" + productCode, 0)); // Cột 0 là cột chứa mã sản phẩm
     }//GEN-LAST:event_txtTimKiemKeyReleased
 
     private void txtTenSPKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTenSPKeyReleased
         // TODO add your handling code here:
+        String maSP = txtMaSP.getText();
+        String tenSP = txtTenSP.getText();
+        int gia = Integer.parseInt(txtGia.getText());
+        String soluong = txtSoLuong.getText();
+        String loai = txtDoUong.getText();
+        int trangThai = rdosd.isSelected() ? 1 : 0;
+
+        // Update the product name in the database (assuming ConnectUtil.update() is your method for DB operations)
+        String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_SoLuongSP = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
+        try {
+            ConnectUtil.update(query, tenSP, gia, soluong, loai, trangThai, maSP);
+            JOptionPane.showMessageDialog(this, "Sửa tên sản phẩm thành công!");
+            loadSanPhamData(); // Refresh the table data
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi sửa tên sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_txtTenSPKeyReleased
 
     private void lblHinhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHinhMouseClicked
@@ -497,281 +579,227 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn hình ảnh");
         fileChooser.setFileFilter(new FileNameExtensionFilter("Image files", "jpg", "jpeg", "png", "gif"));
-  
+
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
+            // Lấy tệp đã chọn
             File selectedFile = fileChooser.getSelectedFile();
+
+            // Hiển thị hình ảnh trong JLabel
             ImageIcon imageIcon = new ImageIcon(selectedFile.getPath());
             lblHinh.setIcon(imageIcon);
-            lblHinh.setText(""); // Xóa text nếu có
-            // Cập nhật đường dẫn hình ảnh vào trường tương ứng nếu cần
+
+            // Lưu đường dẫn hình ảnh (nếu cần)
+            String imagePath = selectedFile.getAbsolutePath();
+            // Bạn có thể lưu đường dẫn này vào cơ sở dữ liệu hoặc biến nào đó để sử dụng sau này
         }
     }//GEN-LAST:event_lblHinhMouseClicked
 
-    private boolean validateInputs() {
-        if (txtMaSP.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Mã sản phẩm không được để trống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            txtMaSP.requestFocus();
-            return false;
-        }
-        if (txtTenSP.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Tên sản phẩm không được để trống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            txtTenSP.requestFocus();
-            return false;
-        }
-        if (txtGia.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Giá sản phẩm không được để trống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            txtGia.requestFocus();
-            return false;
-        }
-        try {
-            int gia = Integer.parseInt(txtGia.getText().trim());
-            if (gia < 0) {
-                JOptionPane.showMessageDialog(this, "Giá sản phẩm phải là số dương.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                txtGia.requestFocus();
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Giá sản phẩm phải là số nguyên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            txtGia.requestFocus();
-            return false;
-        }
-        if (txtdonvi.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Đơn vị sản phẩm không được để trống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            txtdonvi.requestFocus();
-            return false;
-        }
-        if (txtloai.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Loại sản phẩm không được để trống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            txtloai.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private void clearInputFields() {
-        txtMaSP.setText("");
-        txtTenSP.setText("");
-        txtGia.setText("");
-        txtdonvi.setText("");
-        txtloai.setText("");
-        lblHinh.setIcon(null);
-        lblHinh.setText(""); // Xóa text nếu có
-        rdosd.setSelected(true);
-    }
-
-
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
-        if (!validateInputs()) {
-            return;
-        }
-        String maSP = txtMaSP.getText();
-        String tenSP = txtTenSP.getText();
-        int gia = Integer.parseInt(txtGia.getText());
-        String donvi = txtdonvi.getText();
-        String loai = txtloai.getText();
-        String hinh = lblHinh.getIcon() != null ? ((ImageIcon) lblHinh.getIcon()).getDescription() : ""; // Lấy đường dẫn hình ảnh
+        String maSP = txtMaSP.getText().trim();
+        String tenSP = txtTenSP.getText().trim();
+        String giaStr = txtGia.getText().trim();
+        String soluong = txtSoLuong.getText().trim();
+        String loai = txtDoUong.getText().trim();
         int trangThai = rdosd.isSelected() ? 1 : 0;
 
-        String query = "INSERT INTO SanPham (ID_Sanpham, TenSP, Gia, ID_DonviSP, ID_LoaiSP, Trangthai, Hinh) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        // Input validation
+        if (maSP.isEmpty() || tenSP.isEmpty() || giaStr.isEmpty() || soluong.isEmpty() || loai.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int gia;
         try {
-            ConnectUtil.update(query, maSP, tenSP, gia, donvi, loai, trangThai, hinh);
+            gia = Integer.parseInt(giaStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Giá phải là một số hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Adding to the database
+        String query = "INSERT INTO SanPham (ID_Sanpham, TenSP, Gia, ID_SoLuongSP, ID_LoaiSP, Trangthai) VALUES (?, ?, ?, ?, ?, ?)";
+        try {
+            ConnectUtil.update(query, maSP, tenSP, gia, soluong, loai, trangThai);
             JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
-            loadSanPhamData();
-            clearInputFields();
+            loadSanPhamData(); // Reload the table data
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi thêm sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Lỗi khi thêm sản phẩm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-        clearInputFields();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         // TODO add your handling code here:
-        int selectedRow = tblSanPhansd.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        String maSP = tblSanPhansd.getValueAt(selectedRow, 0).toString();
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa sản phẩm này không?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        String maSP = txtMaSP.getText();
+
+        // Xác nhận xóa
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa sản phẩm này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
+            // Xóa sản phẩm khỏi cơ sở dữ liệu
             String query = "DELETE FROM SanPham WHERE ID_Sanpham = ?";
             try {
                 ConnectUtil.update(query, maSP);
                 JOptionPane.showMessageDialog(this, "Xóa sản phẩm thành công!");
-                loadSanPhamData();
+                loadSanPhamData(); // Tải lại dữ liệu bảng
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Lỗi khi xóa sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
-            clearInputFields();
         }
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
-        if (!validateInputs()) {
+        String maSP = txtMaSP.getText().trim();
+        String tenSP = txtTenSP.getText().trim();
+        String giaStr = txtGia.getText().trim();
+        String soluong = txtSoLuong.getText().trim();
+        String loai = txtDoUong.getText().trim();
+        int trangThai = rdosd.isSelected() ? 1 : 0;
+
+        // Input validation
+        if (maSP.isEmpty() || tenSP.isEmpty() || giaStr.isEmpty() || soluong.isEmpty() || loai.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        String maSP = txtMaSP.getText();
-        String tenSP = txtTenSP.getText();
-        int gia = Integer.parseInt(txtGia.getText());
-        String donvi = txtdonvi.getText();
-        String loai = txtloai.getText();
-        String hinh = lblHinh.getIcon() != null ? ((ImageIcon) lblHinh.getIcon()).getDescription() : ""; // Lấy đường dẫn hình ảnh
-        int trangThai = rdosd.isSelected() ? 1 : 0;
 
-        String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_DonviSP = ?, ID_LoaiSP = ?, Trangthai = ?, Hinh = ? WHERE ID_Sanpham = ?";
+        int gia;
         try {
-            ConnectUtil.update(query, tenSP, gia, donvi, loai, trangThai, hinh, maSP);
-            JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!");
-            loadSanPhamData();
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            gia = Integer.parseInt(giaStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Giá phải là một số hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        clearInputFields();
-    }//GEN-LAST:event_btnSuaActionPerformed
 
-    private void updateProduct() {
-        String maSP = txtMaSP.getText();
-        String tenSP = txtTenSP.getText();
-        int gia = Integer.parseInt(txtGia.getText());
-        String donvi = txtdonvi.getText();
-        String loai = txtloai.getText();
-        int trangThai = rdosd.isSelected() ? 1 : 0;
-
+        // Update the database
         String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_DonviSP = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
         try {
-            ConnectUtil.update(query, tenSP, gia, donvi, loai, trangThai, maSP);
+            ConnectUtil.update(query, tenSP, gia, soluong, loai, trangThai, maSP);
             JOptionPane.showMessageDialog(this, "Sửa sản phẩm thành công!");
-            loadSanPhamData();
+            loadSanPhamData(); // Refresh the table data
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi sửa sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private void tbnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbnLamMoiActionPerformed
-        // TODO add your handling code here:
-        txtMaSP.setText("");
-        txtTenSP.setText("");
-        txtloai.setText("");
-        txtGia.setText("");
-        txtdonvi.setText("");
-        lblHinh.setText("");
-        rdosd.setSelected(true);
-        loadSanPhamData();
-    }//GEN-LAST:event_tbnLamMoiActionPerformed
+    }//GEN-LAST:event_btnSuaActionPerformed
 
     private void txtTenSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTenSPActionPerformed
         // TODO add your handling code here:
+        String maSP = txtMaSP.getText();
+        String tenSP = txtTenSP.getText();
+        int gia = Integer.parseInt(txtGia.getText());
+        String soluong = txtSoLuong.getText();
+        String loai = txtDoUong.getText();
+        int trangThai = rdosd.isSelected() ? 1 : 0;
+
+        // Update the product name in the database (assuming ConnectUtil.update() is your method for DB operations)
+        String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_SoLuongSP = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
+        try {
+            ConnectUtil.update(query, tenSP, gia, soluong, loai, trangThai, maSP);
+            JOptionPane.showMessageDialog(this, "Sửa tên sản phẩm thành công!");
+            loadSanPhamData(); // Refresh the table data
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi sửa tên sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_txtTenSPActionPerformed
+
+    private void btnloaidouongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnloaidouongActionPerformed
+        // TODO add your handling code here:
+        String newLoai = JOptionPane.showInputDialog(this, "Nhập loại đồ uống mới:");
+        // Kiểm tra đầu vào của người dùng
+        if (newLoai != null && !newLoai.trim().isEmpty()) {
+            newLoai = newLoai.trim(); // Xóa bỏ khoảng trắng đầu cuối
+
+            // Assuming txtLoai is a JTextField for drink type
+            txtDoUong.setText(newLoai);
+            JOptionPane.showMessageDialog(this, "Thêm loại đồ uống thành công!");
+        } else if (newLoai != null) {
+            JOptionPane.showMessageDialog(this, "Tên loại đồ uống không được để trống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnloaidouongActionPerformed
 
     private void txtMaSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaSPActionPerformed
         // TODO add your handling code here:
         String maSP = txtMaSP.getText().trim();
-
+        // Check if the product ID is not empty
         if (maSP.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Mã sản phẩm không được để trống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        String query = "SELECT * FROM SanPham WHERE ID_Sanpham = ?";
+        // Query the database to retrieve product details
+        String query = "SELECT TenSP, Gia, ID_SoLuongSP, ID_LoaiSP, Trangthai FROM SanPham WHERE ID_Sanpham = ?";
         try {
+            // Assuming ConnectUtil.query() returns a ResultSet or a similar object
             ResultSet rs = ConnectUtil.query(query, maSP);
+
             if (rs.next()) {
-                txtTenSP.setText(rs.getString("TenSP"));
-                txtGia.setText(String.valueOf(rs.getInt("Gia")));
-                txtdonvi.setText(rs.getString("ID_DonviSP"));
-                txtloai.setText(rs.getString("ID_LoaiSP"));
-                if (rs.getInt("Trangthai") == 1) {
+                // Populate the form fields with the retrieved data
+                String tenSP = rs.getString("TenSP");
+                int gia = rs.getInt("Gia");
+                String soluong = rs.getString("ID_SoLuongSP");
+                String loai = rs.getString("ID_LoaiSP");
+                int trangThai = rs.getInt("Trangthai");
+
+                txtTenSP.setText(tenSP);
+                txtGia.setText(String.valueOf(gia));
+                txtSoLuong.setText(soluong);
+                txtDoUong.setText(loai);
+                if (trangThai == 1) {
                     rdosd.setSelected(true);
                 } else {
                     rdoksd.setSelected(true);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm với mã này.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi tìm sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Lỗi khi truy xuất thông tin sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_txtMaSPActionPerformed
 
-    private void tblSanPhansdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSanPhansdMouseClicked
+    private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
         // TODO add your handling code here:
-        int row = tblSanPhansd.getSelectedRow();
-        if (row == -1) {
-            return;
-        }
-        txtMaSP.setText((String) tblSanPhansd.getValueAt(row, 0));
-        txtTenSP.setText((String) tblSanPhansd.getValueAt(row, 1));
-        txtGia.setText(tblSanPhansd.getValueAt(row, 2).toString());
-        txtdonvi.setText((String) tblSanPhansd.getValueAt(row, 3));
-        txtloai.setText((String) tblSanPhansd.getValueAt(row, 4));
-        ImageIcon imageIcon = (ImageIcon) tblSanPhansd.getValueAt(row, 5);
-        lblHinh.setIcon(imageIcon); // Cập nhật icon của JLabel
-        lblHinh.setText(""); // Xóa text nếu có
+        txtMaSP.setText("");
+        txtTenSP.setText("");
+        txtDoUong.setText(""); // Assuming txtLoai is a JTextField for product type
+        txtGia.setText("");
+        txtSoLuong.setText(""); // Assuming txtDonVi is a JTextField for unit
         rdosd.setSelected(true);
+        loadSanPhamData(); // Tải lại dữ liệu bảng
+    }//GEN-LAST:event_btnLamMoiActionPerformed
 
-    }//GEN-LAST:event_tblSanPhansdMouseClicked
-
-    private void tblSanPHamksdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSanPHamksdMouseClicked
+    private void txtSoLuongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSoLuongActionPerformed
         // TODO add your handling code here:
-        int row = tblSanPHamksd.getSelectedRow();
-        if (row == -1) {
-            return;
+        String soLuongText = txtSoLuong.getText();
+
+        // Check if the entered value is a number
+        try {
+            int soLuong = Integer.parseInt(soLuongText);
+            if (soLuong < 0) {
+                JOptionPane.showMessageDialog(this, "Số lượng không thể nhỏ hơn 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                txtSoLuong.setText(""); // Clear the field if the value is invalid
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            txtSoLuong.setText(""); // Clear the field if the value is not a number
         }
-        txtMaSP.setText((String) tblSanPHamksd.getValueAt(row, 0));
-        txtTenSP.setText((String) tblSanPHamksd.getValueAt(row, 1));
-        txtGia.setText(tblSanPHamksd.getValueAt(row, 2).toString());
-        txtdonvi.setText((String) tblSanPHamksd.getValueAt(row, 3));
-        txtloai.setText((String) tblSanPHamksd.getValueAt(row, 4));
-        ImageIcon imageIcon = (ImageIcon) tblSanPHamksd.getValueAt(row, 5);
-        lblHinh.setIcon(imageIcon); // Cập nhật icon của JLabel
-        lblHinh.setText(""); // Xóa text nếu có
-        rdosd.setSelected(false);
-    }//GEN-LAST:event_tblSanPHamksdMouseClicked
-
-    private void tabsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabsMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tabsMouseClicked
-
-    private void rdosdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdosdActionPerformed
-        // TODO add your handling code here:
-        loadSanPhamDataByStatus(1);
-    }//GEN-LAST:event_rdosdActionPerformed
-
-    private void rdoksdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoksdActionPerformed
-        // TODO add your handling code here:
-        loadSanPhamDataByStatus(0);
-    }//GEN-LAST:event_rdoksdActionPerformed
-
-    private void btnThemDoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnThemDoMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnThemDoMouseClicked
-
-    private void btnThemDoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemDoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnThemDoActionPerformed
-
-    private void btnDonViDouongMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDonViDouongMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnDonViDouongMouseClicked
-
-    private void btnDonViDouongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDonViDouongActionPerformed
-        // TODO add your handling code here
-    }//GEN-LAST:event_btnDonViDouongActionPerformed
+    }//GEN-LAST:event_txtSoLuongActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDonViDouong;
+    private javax.swing.JButton btnLamMoi;
+    private javax.swing.JButton btnLast;
+    private javax.swing.JButton btnPrev;
+    private javax.swing.JButton btnStart;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
-    private javax.swing.JButton btnThemDo;
     private javax.swing.JButton btnXoa;
+    private javax.swing.JButton btnloaidouong;
+    private javax.swing.JButton btnnext;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -793,12 +821,11 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     private javax.swing.JTabbedPane tabs;
     private javax.swing.JTable tblSanPHamksd;
     private javax.swing.JTable tblSanPhansd;
-    private javax.swing.JButton tbnLamMoi;
+    private javax.swing.JTextField txtDoUong;
     private javax.swing.JTextField txtGia;
     private javax.swing.JTextField txtMaSP;
+    private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTenSP;
     private javax.swing.JTextField txtTimKiem;
-    private javax.swing.JTextField txtdonvi;
-    private javax.swing.JTextField txtloai;
     // End of variables declaration//GEN-END:variables
 }
