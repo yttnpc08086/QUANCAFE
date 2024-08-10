@@ -2,14 +2,13 @@ package com.mycompany.DAO;
 
 import com.mycompany.Model.NhanVien;
 import com.mycompany.Helper.ConnectUtil;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NhanVienDAO implements InterfaceNhanVien {
 
@@ -108,11 +107,22 @@ public class NhanVienDAO implements InterfaceNhanVien {
         return list;
     }
 
-   
+    public static boolean updatePass(String email, String newPassword) {
+        String sql = "UPDATE NhanVien SET pass = ? WHERE email = ?";
+        try (Connection conn = ConnectUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, email);
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-    public boolean checkEmailExists(String email) {
+    public static boolean checkEmailExists(String email) {
         boolean exists = false;
-        String sql = "SELECT COUNT(*) FROM NhanVien WHERE email = ?";
+        String sql = "SELECT * FROM NhanVien WHERE email = ?";
 
         ResultSet rs;
         try {
