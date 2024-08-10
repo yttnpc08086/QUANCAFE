@@ -40,8 +40,8 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     private void initializeTableModels() {
         modelSanPhansd = (DefaultTableModel) tblSanPhansd.getModel();
         modelSanPHamksd = (DefaultTableModel) tblSanPHamksd.getModel();
-        modelSanPhansd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Số lượng", "Loại"});
-        modelSanPHamksd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Số lượng", "Loại"});
+        modelSanPhansd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Loại"});
+        modelSanPHamksd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Loại"});
     }
 
     private void loadSanPhamData() {
@@ -68,7 +68,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
                 rs.getString("ID_Sanpham"),
                 rs.getString("TenSP"),
                 rs.getInt("Gia"),
-                rs.getString("ID_SoLuongSP"),
                 rs.getString("ID_LoaiSP")
             });
         }
@@ -141,7 +140,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         lblHinh = new javax.swing.JLabel();
         txtGia = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         btnStart = new javax.swing.JButton();
         btnPrev = new javax.swing.JButton();
         btnnext = new javax.swing.JButton();
@@ -156,7 +154,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         btnloaidouong = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtDoUong = new javax.swing.JTextField();
-        txtSoLuong = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(241, 241, 241));
 
@@ -179,7 +176,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Mã SP", "Tên sản phẩm ", "Loại đồ uống ", "Giá", "Số lượng", "Trạng thái", "Hinh"
+                "Mã SP", "Tên sản phẩm ", "Loại đồ uống ", "Giá", "Trạng thái", "Hinh"
             }
         ));
         tblSanPhansd.setPreferredSize(new java.awt.Dimension(1000, 200));
@@ -196,13 +193,13 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 979, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 11, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 115, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         tabs.addTab("Sản Phẩm sử dụng", jPanel2);
@@ -216,7 +213,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Tên sản phẩm", "Loại đồ uống ", "Giá", "Số lượng", "Trạng thái"
+                "Tên sản phẩm", "Loại đồ uống ", "Giá", "Trạng thái"
             }
         ));
         tblSanPHamksd.setPreferredSize(new java.awt.Dimension(1000, 200));
@@ -233,17 +230,17 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1018, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 42, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
         );
 
         tabs.addTab("Sản Phẩm không sử dụng", jPanel3);
 
         jPanel1.add(tabs);
-        tabs.setBounds(10, 470, 1060, 300);
+        tabs.setBounds(10, 470, 990, 180);
 
         jPanel4.setBackground(new java.awt.Color(241, 241, 241));
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.MatteBorder(null), "Tìm kiếm(Tên hoặc Mã)", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
@@ -272,7 +269,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         );
 
         jPanel1.add(jPanel4);
-        jPanel4.setBounds(10, 400, 0, 0);
+        jPanel4.setBounds(10, 400, 499, 58);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setText("Mã sản phẩm");
@@ -346,17 +343,12 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
         txtGia.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jPanel1.add(txtGia);
-        txtGia.setBounds(600, 330, 230, 30);
+        txtGia.setBounds(600, 150, 230, 30);
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Giá");
         jPanel1.add(jLabel5);
-        jLabel5.setBounds(600, 310, 60, 17);
-
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel6.setText("Số lượng:");
-        jPanel1.add(jLabel6);
-        jLabel6.setBounds(600, 130, 70, 17);
+        jLabel5.setBounds(600, 130, 60, 17);
 
         btnStart.setText("|<");
         jPanel1.add(btnStart);
@@ -453,28 +445,20 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         jPanel1.add(txtDoUong);
         txtDoUong.setBounds(340, 330, 200, 30);
 
-        txtSoLuong.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtSoLuongActionPerformed(evt);
-            }
-        });
-        jPanel1.add(txtSoLuong);
-        txtSoLuong.setBounds(600, 152, 230, 30);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1075, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1016, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 684, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 15, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 659, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 11, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -486,16 +470,13 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             txtTenSP.setText(tblSanPhansd.getValueAt(row, 1).toString());
 
             // Assume txtDoUong is a JTextField instead of JComboBox
-            String doUongValue = tblSanPhansd.getValueAt(row, 4).toString().trim();
+            String doUongValue = tblSanPhansd.getValueAt(row, 3).toString().trim();
             txtDoUong.setText(doUongValue);
 
             // Assume txtDV is also a JTextField
-            String dvValue = tblSanPhansd.getValueAt(row, 3).toString().trim();
-            txtSoLuong.setText(dvValue);
-
             txtGia.setText(tblSanPhansd.getValueAt(row, 2).toString());
 
-            String status = tblSanPhansd.getValueAt(row, 5).toString().trim();
+            String status = tblSanPhansd.getValueAt(row, 4).toString().trim();
             if (status.equals("Sử dụng")) {
                 rdosd.setSelected(true);
             } else {
@@ -514,15 +495,13 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             String maSP = tblSanPHamksd.getValueAt(selectedRow, 0).toString();
             String tenSP = tblSanPHamksd.getValueAt(selectedRow, 1).toString();
             int gia = Integer.parseInt(tblSanPHamksd.getValueAt(selectedRow, 2).toString());
-            String soluong = tblSanPHamksd.getValueAt(selectedRow, 3).toString();
-            String loai = tblSanPHamksd.getValueAt(selectedRow, 4).toString();
-            int trangThai = Integer.parseInt(tblSanPHamksd.getValueAt(selectedRow, 5).toString());
+            String loai = tblSanPHamksd.getValueAt(selectedRow, 3).toString();
+            int trangThai = Integer.parseInt(tblSanPHamksd.getValueAt(selectedRow, 4).toString());
 
             // Set these values into the form fields
             txtMaSP.setText(maSP);
             txtTenSP.setText(tenSP);
             txtGia.setText(String.valueOf(gia));
-            txtSoLuong.setText(soluong);
             txtDoUong.setText(loai);
 
             // Set radio button status
@@ -558,14 +537,13 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         String maSP = txtMaSP.getText();
         String tenSP = txtTenSP.getText();
         int gia = Integer.parseInt(txtGia.getText());
-        String soluong = txtSoLuong.getText();
         String loai = txtDoUong.getText();
         int trangThai = rdosd.isSelected() ? 1 : 0;
 
         // Update the product name in the database (assuming ConnectUtil.update() is your method for DB operations)
         String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_SoLuongSP = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
         try {
-            ConnectUtil.update(query, tenSP, gia, soluong, loai, trangThai, maSP);
+            ConnectUtil.update(query, tenSP, gia, loai, trangThai, maSP);
             JOptionPane.showMessageDialog(this, "Sửa tên sản phẩm thành công!");
             loadSanPhamData(); // Refresh the table data
         } catch (Exception e) {
@@ -600,12 +578,11 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         String maSP = txtMaSP.getText().trim();
         String tenSP = txtTenSP.getText().trim();
         String giaStr = txtGia.getText().trim();
-        String soluong = txtSoLuong.getText().trim();
         String loai = txtDoUong.getText().trim();
         int trangThai = rdosd.isSelected() ? 1 : 0;
 
         // Input validation
-        if (maSP.isEmpty() || tenSP.isEmpty() || giaStr.isEmpty() || soluong.isEmpty() || loai.isEmpty()) {
+        if (maSP.isEmpty() || tenSP.isEmpty() || giaStr.isEmpty() || loai.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -621,7 +598,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         // Adding to the database
         String query = "INSERT INTO SanPham (ID_Sanpham, TenSP, Gia, ID_SoLuongSP, ID_LoaiSP, Trangthai) VALUES (?, ?, ?, ?, ?, ?)";
         try {
-            ConnectUtil.update(query, maSP, tenSP, gia, soluong, loai, trangThai);
+            ConnectUtil.update(query, maSP, tenSP, gia, loai, trangThai);
             JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
             loadSanPhamData(); // Reload the table data
         } catch (Exception e) {
@@ -655,12 +632,11 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         String maSP = txtMaSP.getText().trim();
         String tenSP = txtTenSP.getText().trim();
         String giaStr = txtGia.getText().trim();
-        String soluong = txtSoLuong.getText().trim();
         String loai = txtDoUong.getText().trim();
         int trangThai = rdosd.isSelected() ? 1 : 0;
 
         // Input validation
-        if (maSP.isEmpty() || tenSP.isEmpty() || giaStr.isEmpty() || soluong.isEmpty() || loai.isEmpty()) {
+        if (maSP.isEmpty() || tenSP.isEmpty() || giaStr.isEmpty() || loai.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -676,7 +652,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         // Update the database
         String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_DonviSP = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
         try {
-            ConnectUtil.update(query, tenSP, gia, soluong, loai, trangThai, maSP);
+            ConnectUtil.update(query, tenSP, gia, loai, trangThai, maSP);
             JOptionPane.showMessageDialog(this, "Sửa sản phẩm thành công!");
             loadSanPhamData(); // Refresh the table data
         } catch (Exception e) {
@@ -690,14 +666,13 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         String maSP = txtMaSP.getText();
         String tenSP = txtTenSP.getText();
         int gia = Integer.parseInt(txtGia.getText());
-        String soluong = txtSoLuong.getText();
         String loai = txtDoUong.getText();
         int trangThai = rdosd.isSelected() ? 1 : 0;
 
         // Update the product name in the database (assuming ConnectUtil.update() is your method for DB operations)
         String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_SoLuongSP = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
         try {
-            ConnectUtil.update(query, tenSP, gia, soluong, loai, trangThai, maSP);
+            ConnectUtil.update(query, tenSP, gia, loai, trangThai, maSP);
             JOptionPane.showMessageDialog(this, "Sửa tên sản phẩm thành công!");
             loadSanPhamData(); // Refresh the table data
         } catch (Exception e) {
@@ -746,7 +721,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
                 txtTenSP.setText(tenSP);
                 txtGia.setText(String.valueOf(gia));
-                txtSoLuong.setText(soluong);
                 txtDoUong.setText(loai);
                 if (trangThai == 1) {
                     rdosd.setSelected(true);
@@ -768,27 +742,9 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         txtTenSP.setText("");
         txtDoUong.setText(""); // Assuming txtLoai is a JTextField for product type
         txtGia.setText("");
-        txtSoLuong.setText(""); // Assuming txtDonVi is a JTextField for unit
         rdosd.setSelected(true);
         loadSanPhamData(); // Tải lại dữ liệu bảng
     }//GEN-LAST:event_btnLamMoiActionPerformed
-
-    private void txtSoLuongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSoLuongActionPerformed
-        // TODO add your handling code here:
-        String soLuongText = txtSoLuong.getText();
-
-        // Check if the entered value is a number
-        try {
-            int soLuong = Integer.parseInt(soLuongText);
-            if (soLuong < 0) {
-                JOptionPane.showMessageDialog(this, "Số lượng không thể nhỏ hơn 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                txtSoLuong.setText(""); // Clear the field if the value is invalid
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            txtSoLuong.setText(""); // Clear the field if the value is not a number
-        }
-    }//GEN-LAST:event_txtSoLuongActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLamMoi;
@@ -806,7 +762,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -824,7 +779,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtDoUong;
     private javax.swing.JTextField txtGia;
     private javax.swing.JTextField txtMaSP;
-    private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTenSP;
     private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables

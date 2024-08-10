@@ -7,20 +7,21 @@ package com.mycompany.views;
 import com.mycompany.Helper.ConnectUtil;
 import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
+import javax.swing.SwingWorker;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-
 /**
  *
  * @author ASUS
  */
 public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
-
     private DefaultTableModel hoadonModel;
-    private DefaultTableModel huyhoadonModel;
 
     /**
      * Creates new form QuanLyHoaDonJPanel
@@ -34,30 +35,27 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
 
     private void loadData() {
         loadHoaDonData();
-        loadHoaDonChiTietData();
-//        filltoComboboxLSP();
     }
 
     private void loadHoaDonData() {
-        String sql = "SELECT * FROM HoaDon";
-        loadTableData(sql, tblHD, new String[]{"ID_Hoadon", "ID_Nhanvien", "Ngaytao", "TTThanhtoan", "Thanhtien", "ghichu", "SDT", "Ten", "tenShip"});
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                String sql = "SELECT * FROM HoaDon";
+                loadTableData(sql, tblHD, new String[]{"ID_Hoadon", "ID_Nhanvien", "Ngaytao", "TTThanhtoan", "Thanhtien","Lydohuy","Soluongsanphamhuy", "ghichu", "SDT", "Ten"});
+                return null;
+            }
+        }.execute();
     }
 
-    private void loadHoaDonChiTietData() {
-        String sql = "SELECT * FROM HoaDonChiTiet";
-        loadTableData(sql, tblHDCT, new String[]{"ID_HoaDon", "ID_SanPham", "SoLuong", "Gia", "TongGia", "TTthanhtoan", "Lydohuy", "ghichu"});
-    }
-
-    private void loadTableData(String sql, javax.swing.JTable table, String[] columnNames) {
-        ResultSet rs = null;
+    private void loadTableData(String sql, javax.swing.JTable table, String[] columnNames) throws Exception {
+       ResultSet rs = null;
         try {
             rs = ConnectUtil.query(sql);
-
             DefaultTableModel model = new DefaultTableModel();
             for (String columnName : columnNames) {
                 model.addColumn(columnName);
             }
-
             while (rs.next()) {
                 Vector<Object> row = new Vector<>();
                 for (String columnName : columnNames) {
@@ -65,15 +63,14 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
                 }
                 model.addRow(row);
             }
-
             table.setModel(model);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error loading data: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (Exception e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -81,17 +78,11 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
     }
 
     private void initTableModels() {
-        // Initialize table models with column names
-        hoadonModel = new DefaultTableModel(
-                new String[]{"ID Hóa Đơn", "Nhân Viên", "Ngày Tạo", "Trạng Thái", "Thanh Toán", "Thành Tiền", "Lý Do Hủy", "Số Lượng SP Hủy", "Ghi Chú", "SDT", "Tên", "Địa Chỉ", "Tên Ship"}, 0
+         hoadonModel = new DefaultTableModel(
+                new String[]{"ID Hóa Đơn", "ID Nhân Viên", "Ngày Tạo", "Thanh Toán", "Thành Tiền", "Lý Do Hủy", "Số Lượng SP Hủy", "Ghi Chú", "SDT", "Tên"}, 0
         );
         tblHD.setModel(hoadonModel);
-
-        huyhoadonModel = new DefaultTableModel(
-                new String[]{"ID Hóa Đơn", "Nhân Viên", "Ngày Tạo", "Trạng Thái", "Thanh Toán", "Thành Tiền", "Lý Do Hủy", "Số Lượng SP Hủy", "Ghi Chú", "SDT", "Tên", "Địa Chỉ", "Tên Ship"}, 0
-        );
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -362,7 +353,6 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
         String endDate = (String) cbDenngay.getSelectedItem();
 
         if (startDate != null && endDate != null) {
-            // Gọi phương thức filterData với ngày bắt đầu và ngày kết thúc
             filterData(startDate, endDate);
         } else {
             JOptionPane.showMessageDialog(this, "Please select both start and end dates.");
@@ -371,25 +361,21 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
 
     private void filterData(String startDate, String endDate) {
         DefaultTableModel modelHoadon = (DefaultTableModel) tblHD.getModel();
-
         try {
-            // Xóa dữ liệu cũ
             modelHoadon.setRowCount(0);
-
-            ResultSet rs1 = ConnectUtil.query("SELECT * FROM HoaDon WHERE Trangthai = 1 AND Ngaytao BETWEEN ? AND ?", startDate, endDate);
+            ResultSet rs1 = ConnectUtil.query("SELECT * FROM HoaDon WHERE Ngaytao BETWEEN ? AND ?", startDate, endDate);
             while (rs1.next()) {
                 modelHoadon.addRow(new Object[]{
                     rs1.getInt("ID_Hoadon"),
                     rs1.getString("ID_Nhanvien"),
                     rs1.getDate("Ngaytao"),
+                    rs1.getInt("TTThanhtoan"),
                     rs1.getInt("Thanhtien"),
                     rs1.getString("Lydohuy"),
                     rs1.getInt("Soluongsanphamhuy"),
                     rs1.getString("ghichu"),
                     rs1.getString("SDT"),
-                    rs1.getString("Ten"),
-                    rs1.getString("diaChi"),
-                    rs1.getInt("tenShip")
+                    rs1.getString("Ten")
                 });
             }
         } catch (Exception e) {
@@ -399,76 +385,49 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
     }
 
     private void txtMaNVKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMaNVKeyReleased
-        String searchValue = txtMaNV.getText().trim();
-
-        // Example: Filter the table based on the searchValue
+         String searchValue = txtMaNV.getText().trim();
         filterTableBasedOnMaNV(searchValue);
     }
-
 // Example method to filter table
-    private void filterTableBasedOnMaNV(String searchValue) {
-        // Logic to filter the table data based on searchValue
-        // For example, you might have a TableRowSorter to apply filters
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblHD.getModel());
-        tblHD.setRowSorter(sorter);
 
-        if (!searchValue.isEmpty()) {
-            sorter.setRowFilter(RowFilter.regexFilter(searchValue));
-        } else {
-            sorter.setRowFilter(null);  // Reset filter
-        }
+    private void filterTableBasedOnMaNV(String searchValue) {
+         TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblHD.getModel());
+        tblHD.setRowSorter(sorter);
+        sorter.setRowFilter(RowFilter.regexFilter(searchValue));
     }//GEN-LAST:event_txtMaNVKeyReleased
 
     private void txtHDKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHDKeyReleased
-        // TODO add your handling code here:
-        String searchValue = txtHD.getText().trim();
-
-        // Example: Filter the table based on the searchValue
+       String searchValue = txtHD.getText().trim();
         filterTableBasedOnHD(searchValue);
     }
 
 // Example method to filter table
     private void filterTableBasedOnHD(String searchValue) {
-        // Logic to filter the table data based on searchValue
-        // For example, you might have a TableRowSorter to apply filters
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblHD.getModel());
+       TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblHD.getModel());
         tblHD.setRowSorter(sorter);
-
         if (!searchValue.isEmpty()) {
             sorter.setRowFilter(RowFilter.regexFilter(searchValue));
         } else {
-            sorter.setRowFilter(null);  // Reset filter
+            sorter.setRowFilter(null);
         }
     }//GEN-LAST:event_txtHDKeyReleased
 
     private void tblHDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHDMouseClicked
-        // TODO add your handling code here:
-        int selectedRow = tblHD.getSelectedRow();
-
+         int selectedRow = tblHD.getSelectedRow();
         if (selectedRow >= 0) {
-            // Get data from the selected row
-            String maNV = (String) tblHD.getValueAt(selectedRow, 0); // assuming MaNV is in the first column
-            String otherData = (String) tblHD.getValueAt(selectedRow, 1); // assuming otherData is in the second column
-
-            // Set the data to the appropriate text fields
+            String maNV = (String) tblHD.getValueAt(selectedRow, 1); // Adjust the column index if needed
             txtMaNV.setText(maNV);
-            // Set other fields as needed
         }
     }//GEN-LAST:event_tblHDMouseClicked
 
     private void tblHDCTMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHDCTMouseClicked
-        // TODO add your handling code here:
-        int selectedRow = tblHDCT.getSelectedRow();
-
-        if (selectedRow >= 0) {
-            // Get data from the selected row
-            String someField1 = (String) tblHDCT.getValueAt(selectedRow, 0); // assuming someField1 is in the first column
-            String someField2 = (String) tblHDCT.getValueAt(selectedRow, 1); // assuming someField2 is in the second column
-
-            // Set the data to the appropriate text fields
-            // For example:
-            txtHD.setText(someField1);
-            txtMHD.setText(someField2);
+           String sql = "SELECT h.ID_HoaDon, s.TenSanPham, h.SoLuong, h.Gia, h.Lydohuy, h.ghichu "
+                + "FROM HoaDonChiTiet h "
+                + "JOIN SanPham s ON h.ID_SanPham = s.ID_SanPham";
+        try {
+            loadTableData(sql, tblHDCT, new String[]{"ID_HoaDon", "Tên Sản Phẩm", "Số Lượng", "Giá", "Lý Do Hủy", "Ghi Chú"});
+        } catch (Exception ex) {
+            Logger.getLogger(QuanLyHoaDonJPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_tblHDCTMouseClicked
 
@@ -499,4 +458,5 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtTenKH;
     private javax.swing.JTextField txtmaNV;
     // End of variables declaration//GEN-END:variables
+
 }
