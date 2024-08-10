@@ -10,7 +10,7 @@ public class ConnectUtil {
     static String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     static String url = "jdbc:sqlserver://localhost:1433;databaseName=COFFEE;encrypt=true;trustServerCertificate=true;";
     static String user = "sa";
-    static String password = "20190400";
+    static String password = "Fpl@!23456";
 
     static {
         try {

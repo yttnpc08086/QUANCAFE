@@ -2,15 +2,19 @@ package com.mycompany.DAO;
 
 import com.mycompany.Model.NhanVien;
 import com.mycompany.Helper.ConnectUtil;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NhanVienDAO implements InterfaceNhanVien {
 
-    private String INSERT_SQL = "INSERT INTO NhanVien VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
-    private String UPDATE_SQL = "UPDATE NhanVien SET TenNV = ?, GioiTinh = ?, Ngaysinh = ?, Diachi = ?, Email = ?, SDT = ?, Username = ?, Pass = ?, Vaitro = ?, Trangthai = ?, Hinh = ? WHERE ID_Nhanvien = ?";
+    private String INSERT_SQL = "INSERT INTO NhanVien VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+    private String UPDATE_SQL = "UPDATE NhanVien SET TenNV = ?, GioiTinh = ?, Ngaysinh = ?, Diachi = ?, Email = ?, SDT = ?, Username = ?, Pass = ?, Vaitro = ?, Trangthai = ? WHERE ID_Nhanvien = ?";
     private String DELETE_HD_SQL = "UPDATE NhanVien SET Trangthai = 0 WHERE ID_Nhanvien = ? AND Trangthai = 1";
     private String DELETE_KHD_SQL = "DELETE FROM NhanVien WHERE ID_Nhanvien = ? AND Trangthai = 0";
     private String SELECT_ALL_SQL = "SELECT * FROM NhanVien";
@@ -32,8 +36,7 @@ public class NhanVienDAO implements InterfaceNhanVien {
                 entity.getUserName(),
                 entity.getPass(),
                 entity.isVaiTro(),
-                entity.isTrangThai(),
-                entity.getHinh());
+                entity.isTrangThai());
     }
 
     public void update(NhanVien entity) {
@@ -48,7 +51,6 @@ public class NhanVienDAO implements InterfaceNhanVien {
                 entity.getPass(),
                 entity.isVaiTro(),
                 entity.isTrangThai(),
-                entity.getHinh(),
                 entity.getId_Nhanvien());
     }
 
@@ -97,7 +99,6 @@ public class NhanVienDAO implements InterfaceNhanVien {
                 entity.setPass(rs.getString("Pass"));
                 entity.setVaiTro(rs.getBoolean("Vaitro"));
                 entity.setTrangThai(rs.getBoolean("Trangthai"));
-                entity.setHinh(rs.getString("Hinh"));
                 list.add(entity);
             }
             rs.getStatement().getConnection().close();
@@ -107,8 +108,23 @@ public class NhanVienDAO implements InterfaceNhanVien {
         return list;
     }
 
-    public void updatePassword(String code, String email) {
-        ConnectUtil.update(UPDATE_PASS_SQL, code, email);
+   
+
+    public boolean checkEmailExists(String email) {
+        boolean exists = false;
+        String sql = "SELECT COUNT(*) FROM NhanVien WHERE email = ?";
+
+        ResultSet rs;
+        try {
+            rs = ConnectUtil.query(sql);
+            if (rs.next()) {
+                exists = rs.getInt(1) > 0;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return exists;
     }
 
     public List<NhanVien> selectByTrangThai(int trangThai) {
@@ -172,9 +188,9 @@ public class NhanVienDAO implements InterfaceNhanVien {
                 nv.setGender(rs.getBoolean("GioiTinh"));
                 nv.setNgaysinh(rs.getDate("Ngaysinh"));
                 nv.setDiaChi(rs.getString("DiaChi"));
+                nv.setDiaChi(rs.getString("SDT"));
                 nv.setEmail(rs.getString("Email"));
                 nv.setVaiTro(rs.getBoolean("Vaitro"));
-                nv.setHinh(rs.getString("Hinh"));
                 nv.setTrangThai(rs.getBoolean("Trangthai"));
                 list.add(nv);
             }
@@ -183,7 +199,5 @@ public class NhanVienDAO implements InterfaceNhanVien {
         }
         return list;
     }
-
-   
 
 }

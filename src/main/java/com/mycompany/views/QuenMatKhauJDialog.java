@@ -5,6 +5,7 @@
  */
 package com.mycompany.views;
 
+import com.mycompany.DAO.NhanVienDAO;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Message;
@@ -165,15 +166,23 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
 
     private void btnguimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguimaActionPerformed
         // TODO add your handling code here:
+
         String email = txtEmail.getText().trim();
         if (!email.isEmpty()) {
-            verificationCode = generateVerificationCode();
-            sendVerificationCode(email, verificationCode);
-            txtMaxacnhan.setEnabled(true);
-            JOptionPane.showMessageDialog(this, "Mã xác nhận đã được gửi tới email của bạn.");
+            boolean emailExists = NhanVienDAO.checkEmailExists(email);
+
+            if (emailExists) {
+                verificationCode = generateVerificationCode();
+                sendVerificationCode(email, verificationCode);
+                txtMaxacnhan.setEnabled(true);
+                JOptionPane.showMessageDialog(this, "Mã xác nhận đã được gửi tới email của bạn.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Email không tồn tại trong hệ thống.");
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập email.");
         }
+
     }//GEN-LAST:event_btnguimaActionPerformed
 
     private void btnxacnhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxacnhanActionPerformed
@@ -181,10 +190,15 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
         String code = txtMaxacnhan.getText().trim();
         if (code.equals(verificationCode)) {
             String newPassword = JOptionPane.showInputDialog(this, "Nhập mật khẩu mới:");
+            String email = txtEmail.getText();
             if (newPassword != null && !newPassword.isEmpty()) {
-                // Update password in the database
-                // NhanVienDAO.updatePassword(email, newPassword);
-                JOptionPane.showMessageDialog(this, "Đặt lại mật khẩu thành công.");
+                boolean isUpdated = NhanVienDAO.updatePassword(email, newPassword);
+                if (isUpdated) {
+                    JOptionPane.showMessageDialog(this, "Đặt lại mật khẩu thành công.");
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Không thể đặt lại mật khẩu. Vui lòng thử lại.");
+                }
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới.");
@@ -206,10 +220,10 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
     }
 
     private void sendVerificationCode(String email, String code) {
-        String from = "your-email@example.com";
-        String host = "thanhhmann123@gmail.com"; // Thay bằng SMTP server của bạn
-        final String username = "manhttpc08078@fpt.edu.vn"; // Email của bạn
-        final String password = "Thanhman@123"; // Mật khẩu email của bạn
+        String from = "yttnpc08086@fpt.edu.vn";
+        String host = "smtp.gmail.com"; // Sử dụng SMTP server của Gmail
+        final String username = "yttnpc08086@fpt.edu.vn"; // Thay bằng email của bạn
+        final String password = "rgnv bird rdku iped"; // Thay bằng mật khẩu email của bạn
 
         // Cài đặt thuộc tính SMTP server
         Properties properties = System.getProperties();
@@ -238,7 +252,7 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
             System.out.println("Gửi mã xác nhận thành công...");
         } catch (MessagingException mex) {
             mex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi gửi email.");
+            JOptionPane.showMessageDialog(null, "Có lỗi xảy ra khi gửi email.");
         }
     }
 
@@ -299,4 +313,24 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtMaxacnhan;
     // End of variables declaration//GEN-END:variables
 
+//    static char[] OTP(int len) {
+//        System.out.println("Generating OTP using random() : ");
+//        System.out.print("You OTP is : ");
+//
+//        // Using numeric values 
+//        String numbers = txt
+//
+//        // Using random method 
+//        Random rndm_method = new Random();
+//
+//        char[] otp = new char[len];
+//
+//        for (int i = 0; i < len; i++) {
+//            // Use of charAt() method : to get character value 
+//            // Use of nextInt() as it is scanning the value as int 
+//            otp[i]
+//                    = numbers.charAt(rndm_method.nextInt(numbers.length()));
+//        }
+//        return otp;
+//    }
 }
