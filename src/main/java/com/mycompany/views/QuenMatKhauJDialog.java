@@ -7,6 +7,7 @@ package com.mycompany.views;
 
 import com.mycompany.DAO.NhanVienDAO;
 import com.mycompany.Helper.MsgBox;
+import com.mycompany.Helper.VerificationCode;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Message;
@@ -26,13 +27,19 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
     /**
      * Creates new form QuenMatKhauJDialog
      */
-    private String verificationCode;
+    private VerificationCode verificationCode;
 
     public QuenMatKhauJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
         txtMaxacnhan.setEnabled(false);
+    }
+
+    private String generateVerificationCode() {
+        Random rand = new Random();
+        int code = 100000 + rand.nextInt(900000);
+        return String.valueOf(code);
     }
 
     /**
@@ -164,68 +171,64 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-private static final long EXPIRATION_TIME = 5 * 60 * 1000; // 5 phút
-
-    private class VerificationCode {
-
-        private String code;
-        private long timestamp;
-
-        public VerificationCode(String code) {
-            this.code = code;
-            this.timestamp = System.currentTimeMillis();
-        }
-
-        public boolean isExpired() {
-            return System.currentTimeMillis() - timestamp > EXPIRATION_TIME;
-        }
-    }
 
 
     private void btnguimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguimaActionPerformed
-        // TODO add your handling code here:
         try {
             String email = txtEmail.getText().trim();
             if (!email.isEmpty()) {
-//                boolean emailExists = NhanVienDAO.checkEmailExists(email);
-//
-//                if (emailExists) {
-                    verificationCode = generateVerificationCode();
-                    sendVerificationCode(email, verificationCode);
-                    txtMaxacnhan.setEnabled(true);
-                  MsgBox.alert(this, "Mã xác nhận đã được gửi tới email của bạn.");
-//                } else {
-//                    JOptionPane.showMessageDialog(this, "Email không tồn tại trong hệ thống.");
-//                }
+                boolean emailExists = NhanVienDAO.checkEmailExists(email);
+
+                if (emailExists) {
+                    if (verificationCode == null || verificationCode.isExpired()) {
+                        verificationCode = new VerificationCode(generateVerificationCode());
+                        sendVerificationCode(email, verificationCode.getCode());
+                        txtMaxacnhan.setEnabled(true);
+                        MsgBox.alert(this, "Mã xác nhận đã được gửi tới email của bạn.");
+                    } else {
+                       MsgBox.alert(this, "Mã xác nhận đã được gửi, vui lòng chờ 1 phút để gửi lại.");
+                    }
+                } else {
+                  MsgBox.alert(this, "Email không tồn tại trong hệ thống.");
+                }
             } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập email.");
+               MsgBox.alert(this, "Vui lòng nhập email.");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }//GEN-LAST:event_btnguimaActionPerformed
 
     private void btnxacnhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxacnhanActionPerformed
-        // TODO add your handling code here:
-        String code = txtMaxacnhan.getText().trim();
-        String newPassword = JOptionPane.showInputDialog(this, "Nhập mật khẩu mới:");
-        String email = txtEmail.getText();
-        if (code.equals(verificationCode)) {
-            if (newPassword != null && !newPassword.isEmpty()) {
-                boolean isUpdated = NhanVienDAO.updatePass(email, newPassword);
-                if (isUpdated) {
-                    MsgBox.alert(this, "Đặt lại mật khẩu thành công.");
-                    this.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Không thể đặt lại mật khẩu. Vui lòng thử lại.");
-                }
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới.");
-            }
+        if (txtMaxacnhan.getText().isEmpty()) {
+            MsgBox.alert(this, "Vui lòng nhập mã OTP");
+            txtMaxacnhan.setText("");
+            txtMaxacnhan.requestFocus();
         } else {
-            JOptionPane.showMessageDialog(this, "Mã xác nhận không đúng.");
+            String code = txtMaxacnhan.getText().trim();
+            String newPassword = MsgBox.promt(this, "Nhập mật khẩu mới:");
+            String email = txtEmail.getText();
+            if (verificationCode != null && !verificationCode.isExpired()) {
+                if (code.equals(verificationCode.getCode())) {
+                    if (newPassword != null && !newPassword.isEmpty()) {
+                        String updateResult = NhanVienDAO.updatePass(email, newPassword);
+                        if (updateResult.equals("Password updated successfully!")) {
+                            MsgBox.alert(this, "Đặt lại mật khẩu thành công.");
+                            this.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(this, updateResult);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Mã xác nhận không đúng.");
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Mã xác nhận đã hết hạn. Vui lòng lấy lại mã mới.");
+                txtMaxacnhan.setText("");
+            }
         }
     }//GEN-LAST:event_btnxacnhanActionPerformed
 
@@ -234,32 +237,23 @@ private static final long EXPIRATION_TIME = 5 * 60 * 1000; // 5 phút
         this.dispose();
     }//GEN-LAST:event_btnHuyActionPerformed
 
-    private String generateVerificationCode() {
-        Random rand = new Random();
-        int code = 100000 + rand.nextInt(900000);
-        return String.valueOf(code);
-    }
-
     private void sendVerificationCode(String email, String code) {
         String from = "yttnpc08086@fpt.edu.vn";
         String host = "smtp.gmail.com"; // Sử dụng SMTP server của Gmail
         final String username = "yttnpc08086@fpt.edu.vn"; // Thay bằng email của bạn
         final String password = "rgnv bird rdku iped"; // Thay bằng mật khẩu email của bạn
-
         // Cài đặt thuộc tính SMTP server
         Properties properties = System.getProperties();
         properties.setProperty("mail.smtp.host", host);
         properties.setProperty("mail.smtp.port", "587"); // Cổng SMTP thường dùng
         properties.setProperty("mail.smtp.auth", "true");
         properties.setProperty("mail.smtp.starttls.enable", "true");
-
         // Tạo session để gửi email
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
             }
         });
-
         try {
             // Tạo đối tượng MimeMessage để định dạng email
             MimeMessage message = new MimeMessage(session);
