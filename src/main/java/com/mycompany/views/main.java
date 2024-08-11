@@ -557,7 +557,7 @@ public class main extends javax.swing.JFrame {
 
     private void lblBanHangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBanHangMouseClicked
         // TODO add your handling code here:
-        QuanLyBanHangJPanel banHangPanel = new QuanLyBanHangJPanel("jdbc:sqlserver://localhost:1433;databaseName=COFFEE", "sa", "20190400");
+        QuanLyBanHangJPanel banHangPanel = new QuanLyBanHangJPanel("jdbc:sqlserver://localhost:1433;databaseName=COFFEE", "sa", "Fpl@!23456");
         setRightPanelContent(banHangPanel);
     }//GEN-LAST:event_lblBanHangMouseClicked
 
@@ -587,8 +587,10 @@ public class main extends javax.swing.JFrame {
 
     private void menuDangXuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuDangXuatMouseClicked
         // TODO add your handling code here:
-        DangnhapJDialog loginDialog = new DangnhapJDialog(this, true);
-        loginDialog.setVisible(true);
+//        DangnhapJDialog loginDialog = new DangnhapJDialog(this, true);
+//        loginDialog.setVisible(true);
+        DangNhapJPanel dangNhapJPanel = new DangNhapJPanel();
+        dangNhapJPanel.setVisible(true);
     }//GEN-LAST:event_menuDangXuatMouseClicked
 
     private void menuDMKMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuDMKMouseClicked
@@ -624,18 +626,15 @@ public class main extends javax.swing.JFrame {
             // Đóng cửa sổ chính
             this.dispose();
 
-            // Mở cửa sổ đăng nhập mới
+//             Mở cửa sổ đăng nhập mới
             JFrame dangNhapFrame = new JFrame("Đăng Nhập");
             dangNhapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            dangNhapFrame.setSize(400, 300); // Kích thước tùy chỉnh
-
-            // Thêm DangNhapJPanel vào JFrame
+            dangNhapFrame.setSize(726,470); // Kích thước tùy chỉnh
+//             Thêm DangNhapJPanel vào JFrame
             DangNhapJPanel dangNhapPanel = new DangNhapJPanel();
             dangNhapFrame.add(dangNhapPanel);
-
             // Cài đặt hiển thị ở giữa màn hình
             dangNhapFrame.setLocationRelativeTo(null);
-
             // Hiển thị JFrame
             dangNhapFrame.setVisible(true);
         }

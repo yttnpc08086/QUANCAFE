@@ -266,7 +266,7 @@ public class DangNhapJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btndangnhapActionPerformed
 
     private void btnthoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthoatActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnthoatActionPerformed
 
     private void txtpassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtpassActionPerformed
