@@ -27,7 +27,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
     private DefaultTableModel modelSanPhansd;
     private DefaultTableModel modelSanPHamksd;
-
     /**
      * Creates new form QuanLySanPhamJPanel
      */
@@ -43,7 +42,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         modelSanPhansd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Loại"});
         modelSanPHamksd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Loại"});
     }
-
     private void loadSanPhamData() {
         try {
             // Load data for tblSanPhansd (active products)
@@ -72,7 +70,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             });
         }
     }
-
     private void filterTable(String query) {
         DefaultTableModel model = (DefaultTableModel) tblSanPhansd.getModel();
         TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(model);
@@ -104,13 +101,12 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
                     }
                 }
             };
-
             tr.setRowFilter(dateFilter);
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -503,7 +499,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             txtTenSP.setText(tenSP);
             txtGia.setText(String.valueOf(gia));
             txtDoUong.setText(loai);
-
             // Set radio button status
             if (trangThai == 1) {
                 rdosd.setSelected(true);
@@ -551,7 +546,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Lỗi khi sửa tên sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_txtTenSPKeyReleased
-
+    
     private void lblHinhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHinhMouseClicked
         // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
@@ -586,7 +581,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        
         int gia;
         try {
             gia = Integer.parseInt(giaStr);
@@ -708,9 +703,9 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         // Query the database to retrieve product details
         String query = "SELECT TenSP, Gia, ID_SoLuongSP, ID_LoaiSP, Trangthai FROM SanPham WHERE ID_Sanpham = ?";
         try {
+            
             // Assuming ConnectUtil.query() returns a ResultSet or a similar object
             ResultSet rs = ConnectUtil.query(query, maSP);
-
             if (rs.next()) {
                 // Populate the form fields with the retrieved data
                 String tenSP = rs.getString("TenSP");
@@ -718,7 +713,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
                 String soluong = rs.getString("ID_SoLuongSP");
                 String loai = rs.getString("ID_LoaiSP");
                 int trangThai = rs.getInt("Trangthai");
-
                 txtTenSP.setText(tenSP);
                 txtGia.setText(String.valueOf(gia));
                 txtDoUong.setText(loai);
