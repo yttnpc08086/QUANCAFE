@@ -12,18 +12,19 @@ import java.util.List;
 
 public class NhanVienDAO implements InterfaceNhanVien {
 
-    private String INSERT_SQL = "INSERT INTO NhanVien VALUES(?,?,?,?,?,?,?,?,?,?,?)";
-    private String UPDATE_SQL = "UPDATE NhanVien SET TenNV = ?, GioiTinh = ?, Ngaysinh = ?, Diachi = ?, Email = ?, SDT = ?, Username = ?, Pass = ?, Vaitro = ?, Trangthai = ? WHERE ID_Nhanvien = ?";
-    private String DELETE_HD_SQL = "UPDATE NhanVien SET Trangthai = 0 WHERE ID_Nhanvien = ? AND Trangthai = 1";
-    private String DELETE_KHD_SQL = "DELETE FROM NhanVien WHERE ID_Nhanvien = ? AND Trangthai = 0";
-    private String SELECT_ALL_SQL = "SELECT * FROM NhanVien";
-    private String SELECT_BY_ID_SQL = "SELECT * FROM NhanVien WHERE ID_Nhanvien = ?";
-    private String SELECT_BY_ACCOUNT_SQL = "SELECT * FROM NhanVien WHERE Username = ?";
-    private String SELECT_TRANG_THAI_1 = "SELECT * FROM NhanVien WHERE Trangthai = 0";
-    private String SELECT_TRANG_THAI_2 = "SELECT * FROM NhanVien WHERE Trangthai = 1";
-    private String UPDATE_PASS_SQL = "UPDATE NhanVien SET Pass = ? WHERE Email = ?";
+    private final String INSERT_SQL = "INSERT INTO NhanVien (ID_Nhanvien, TenNV, GioiTinh, Ngaysinh, Diachi, Email, SDT, Username, Pass, Vaitro, Trangthai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private final String UPDATE_SQL = "UPDATE NhanVien SET TenNV = ?, GioiTinh = ?, Ngaysinh = ?, Diachi = ?, Email = ?, SDT = ?, Username = ?, Pass = ?, Vaitro = ?, Trangthai = ? WHERE ID_Nhanvien = ?";
+    private final String DELETE_HD_SQL = "UPDATE NhanVien SET Trangthai = 0 WHERE ID_Nhanvien = ? AND Trangthai = 1";
+    private final String DELETE_KHD_SQL = "DELETE FROM NhanVien WHERE ID_Nhanvien = ? AND Trangthai = 0";
+    private final String SELECT_ALL_SQL = "SELECT * FROM NhanVien";
+    private final String SELECT_BY_ID_SQL = "SELECT * FROM NhanVien WHERE ID_Nhanvien = ?";
+    private final String SELECT_BY_ACCOUNT_SQL = "SELECT * FROM NhanVien WHERE Username = ?";
+    private final String SELECT_TRANG_THAI_1 = "SELECT * FROM NhanVien WHERE Trangthai = 0";
+    private final String SELECT_TRANG_THAI_2 = "SELECT * FROM NhanVien WHERE Trangthai = 1";
+//    private String UPDATE_PASS_SQL = "UPDATE NhanVien SET Pass = ? WHERE Email = ?";
 
     public void insert(NhanVien entity) {
+            System.out.println("Inserting NhanVien with Username: " + entity.getUserName());
         ConnectUtil.update(INSERT_SQL,
                 entity.getId_Nhanvien(),
                 entity.getTenNV(),
@@ -107,34 +108,38 @@ public class NhanVienDAO implements InterfaceNhanVien {
         return list;
     }
 
-    public static boolean updatePass(String email, String newPassword) {
-        String sql = "UPDATE NhanVien SET pass = ? WHERE email = ?";
+    // Phương thức kiểm tra email tồn tại trong cơ sở dữ liệu
+    public static boolean checkEmailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM NhanVien WHERE email = ?";
         try (Connection conn = ConnectUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, newPassword);
-            pstmt.setString(2, email);
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
-    public static boolean checkEmailExists(String email) {
-        boolean exists = false;
-        String sql = "SELECT * FROM NhanVien WHERE email = ?";
+    // Phương thức cập nhật mật khẩu
+    public static String updatePass(String email, String newPassword) {
+        String sql = "UPDATE NhanVien SET pass = ? WHERE email = ?";
+        try (Connection conn = ConnectUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newPassword); // Đặt giá trị cho tham số số 1 (mật khẩu mới)
+            pstmt.setString(2, email); // Đặt giá trị cho tham số số 2 (email)
 
-        ResultSet rs;
-        try {
-            rs = ConnectUtil.query(sql);
-            if (rs.next()) {
-                exists = rs.getInt(1) > 0;
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                return "Password updated successfully!";
+            } else {
+                return "Email not found in the database!";
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "An error occurred while updating the password.";
         }
-
-        return exists;
     }
 
     public List<NhanVien> selectByTrangThai(int trangThai) {

@@ -14,7 +14,6 @@ public class NhanVien {
     private String Pass;
     private boolean VaiTro;
     private boolean TrangThai;
-    private String Hinh;
 
     public NhanVien(String id_Nhanvien, String TenNV, boolean gender, boolean VaiTro) {
         this.id_Nhanvien = id_Nhanvien;
@@ -23,7 +22,7 @@ public class NhanVien {
         this.VaiTro = VaiTro;
     }
     
-    public NhanVien(String id_Nhanvien, String TenNV, boolean gender, Date Ngaysinh, String DiaChi, String Email, String SDT, String userName, String Pass, boolean VaiTro, boolean TrangThai, String Hinh) {
+    public NhanVien(String id_Nhanvien, String TenNV, boolean gender, Date Ngaysinh, String DiaChi, String Email, String SDT, String userName, String Pass, boolean VaiTro, boolean TrangThai) {
         this.id_Nhanvien = id_Nhanvien;
         this.TenNV = TenNV;
         this.gender = gender;
@@ -35,7 +34,6 @@ public class NhanVien {
         this.Pass = Pass;
         this.VaiTro = VaiTro;
         this.TrangThai = TrangThai;
-        this.Hinh = Hinh;
     }
 
     public NhanVien() {
@@ -129,13 +127,4 @@ public class NhanVien {
     public void setTrangThai(boolean TrangThai) {
         this.TrangThai = TrangThai;
     }
-
-    public String getHinh() {
-        return Hinh;
-    }
-
-    public void setHinh(String Hinh) {
-        this.Hinh = Hinh;
-    }
-    
 }
