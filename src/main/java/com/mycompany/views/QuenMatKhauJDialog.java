@@ -7,7 +7,6 @@ package com.mycompany.views;
 
 import com.mycompany.DAO.NhanVienDAO;
 import com.mycompany.Helper.MsgBox;
-import com.mycompany.Helper.VerificationCode;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Message;
@@ -24,11 +23,11 @@ import javax.swing.JOptionPane;
  */
 public class QuenMatKhauJDialog extends javax.swing.JDialog {
 
-    private VerificationCode verificationCode;
-
     /**
      * Creates new form QuenMatKhauJDialog
      */
+    private String verificationCode;
+
     public QuenMatKhauJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -165,75 +164,81 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+private static final long EXPIRATION_TIME = 5 * 60 * 1000; // 5 phút
+
+    private class VerificationCode {
+
+        private String code;
+        private long timestamp;
+
+        public VerificationCode(String code) {
+            this.code = code;
+            this.timestamp = System.currentTimeMillis();
+        }
+
+        public boolean isExpired() {
+            return System.currentTimeMillis() - timestamp > EXPIRATION_TIME;
+        }
+    }
 
 
     private void btnguimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguimaActionPerformed
+        // TODO add your handling code here:
         try {
             String email = txtEmail.getText().trim();
             if (!email.isEmpty()) {
-                boolean emailExists = NhanVienDAO.checkEmailExists(email);
-
-                if (emailExists) {
-                    if (verificationCode == null || verificationCode.isExpired()) {
-                        verificationCode = new VerificationCode(generateVerificationCode());
-                        sendVerificationCode(email, verificationCode.getCode());
-                        txtMaxacnhan.setEnabled(true);
-                        MsgBox.alert(this, "Mã xác nhận đã được gửi tới email của bạn.");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Mã xác nhận đã được gửi, vui lòng chờ 1 phút để gửi lại.");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "Email không tồn tại trong hệ thống.");
-                }
+//                boolean emailExists = NhanVienDAO.checkEmailExists(email);
+//
+//                if (emailExists) {
+                    verificationCode = generateVerificationCode();
+                    sendVerificationCode(email, verificationCode);
+                    txtMaxacnhan.setEnabled(true);
+                  MsgBox.alert(this, "Mã xác nhận đã được gửi tới email của bạn.");
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "Email không tồn tại trong hệ thống.");
+//                }
             } else {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập email.");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }//GEN-LAST:event_btnguimaActionPerformed
 
     private void btnxacnhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxacnhanActionPerformed
-
-        if (txtMaxacnhan.getText().isEmpty()) {
-            MsgBox.alert(this, "Vui lòng nhập mã otp");
-            txtMaxacnhan.setText("");
-            txtMaxacnhan.requestFocus();
-        } else {
-            // Xử lý xác nhận OTP và cập nhật mật khẩu
-            String code = txtMaxacnhan.getText().trim();
-            String newPassword = JOptionPane.showInputDialog(this, "Nhập mật khẩu mới:");
-            String email = txtEmail.getText();
-
-            if (verificationCode != null && !verificationCode.isExpired()) {
-                if (code.equals(verificationCode.getCode())) {
-                    if (newPassword != null && !newPassword.isEmpty()) {
-                        String updateResult = NhanVienDAO.updatePass(email, newPassword);
-                        if (updateResult.equals("Password updated successfully!")) {
-                            MsgBox.alert(this, "Đặt lại mật khẩu thành công.");
-                            this.dispose();
-                        } else {
-                            JOptionPane.showMessageDialog(this, updateResult);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới.");
-                    }
+        // TODO add your handling code here:
+        String code = txtMaxacnhan.getText().trim();
+        String newPassword = JOptionPane.showInputDialog(this, "Nhập mật khẩu mới:");
+        String email = txtEmail.getText();
+        if (code.equals(verificationCode)) {
+            if (newPassword != null && !newPassword.isEmpty()) {
+                boolean isUpdated = NhanVienDAO.updatePass(email, newPassword);
+                if (isUpdated) {
+                    MsgBox.alert(this, "Đặt lại mật khẩu thành công.");
+                    this.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Mã xác nhận không đúng.");
+                    JOptionPane.showMessageDialog(this, "Không thể đặt lại mật khẩu. Vui lòng thử lại.");
                 }
+                this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Mã xác nhận đã hết hạn. Vui lòng lấy lại mã mới.");
-                txtMaxacnhan.setText("");
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới.");
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Mã xác nhận không đúng.");
         }
-
-
     }//GEN-LAST:event_btnxacnhanActionPerformed
 
     private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btnHuyActionPerformed
+
+    private String generateVerificationCode() {
+        Random rand = new Random();
+        int code = 100000 + rand.nextInt(900000);
+        return String.valueOf(code);
+    }
 
     private void sendVerificationCode(String email, String code) {
         String from = "yttnpc08086@fpt.edu.vn";
@@ -328,10 +333,4 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtMaxacnhan;
     // End of variables declaration//GEN-END:variables
-
-    private String generateVerificationCode() {
-        Random rand = new Random();
-        int code = 100000 + rand.nextInt(900000);
-        return String.valueOf(code);
-    }
 }
