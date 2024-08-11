@@ -76,7 +76,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         tblSanPhansd.setRowSorter(tr);
         tr.setRowFilter(RowFilter.regexFilter("(?i)" + query));
     }
-
+    
     private void filterTableByDate(String startDate, String endDate) {
         DefaultTableModel model = (DefaultTableModel) tblSanPhansd.getModel();
         TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(model);
