@@ -68,7 +68,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
                 rs.getString("ID_Sanpham"),
                 rs.getString("TenSP"),
                 rs.getInt("Gia"),
-//                rs.getString("ID_SoLuongSP"),
+                //                rs.getString("ID_SoLuongSP"),
                 rs.getString("ID_LoaiSP")
             });
         }

@@ -1,6 +1,5 @@
 package com.mycompany.views;
 
-
 public class HoadonchitietJDialog extends javax.swing.JDialog {
 
     public HoadonchitietJDialog(int a) {

@@ -11,8 +11,9 @@ import java.util.Date;
  * @author Admin
  */
 public class LoaiSanPham {
-        private String ID_LoaiSP;
-        private String TenLoai;
+
+    private String ID_LoaiSP;
+    private String TenLoai;
 
     public LoaiSanPham() {
     }
@@ -37,8 +38,9 @@ public class LoaiSanPham {
     public void setTenLoai(String TenLoai) {
         this.TenLoai = TenLoai;
     }
-        @Override
-        public String toString(){
-            return TenLoai;
-        }
+
+    @Override
+    public String toString() {
+        return TenLoai;
+    }
 }

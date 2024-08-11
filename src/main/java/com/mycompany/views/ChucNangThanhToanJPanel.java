@@ -19,7 +19,8 @@ public class ChucNangThanhToanJPanel extends javax.swing.JPanel {
         initComponents();
 
     }
-     public void setMaSanPham(String maSanPham) {
+
+    public void setMaSanPham(String maSanPham) {
         txtmasp.setText(maSanPham);
     }
 
@@ -56,7 +57,6 @@ public class ChucNangThanhToanJPanel extends javax.swing.JPanel {
         setSize(size);
         setGiaSize(giasize);
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -225,9 +225,8 @@ public class ChucNangThanhToanJPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-         JOptionPane.showMessageDialog(this, "Thanh toán thành công vào lúc " + java.time.LocalTime.now(), "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Thanh toán thành công vào lúc " + java.time.LocalTime.now(), "Thông báo", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jButton1ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

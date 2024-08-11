@@ -3,6 +3,7 @@ package com.mycompany.Model;
 import java.util.Date;
 
 public class NhanVien {
+
     private String id_Nhanvien;
     private String TenNV;
     private boolean gender;
@@ -21,7 +22,7 @@ public class NhanVien {
         this.gender = gender;
         this.VaiTro = VaiTro;
     }
-    
+
     public NhanVien(String id_Nhanvien, String TenNV, boolean gender, Date Ngaysinh, String DiaChi, String Email, String SDT, String userName, String Pass, boolean VaiTro, boolean TrangThai) {
         this.id_Nhanvien = id_Nhanvien;
         this.TenNV = TenNV;

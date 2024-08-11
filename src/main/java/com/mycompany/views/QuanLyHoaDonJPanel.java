@@ -472,7 +472,6 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tblHDCTMouseClicked
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnTim;
     private javax.swing.JButton btn_lammoi;

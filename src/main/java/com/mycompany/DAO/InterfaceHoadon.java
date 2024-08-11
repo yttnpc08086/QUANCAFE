@@ -14,23 +14,25 @@ import java.util.List;
  * @author HP
  */
 public interface InterfaceHoadon {
+
     abstract public void insert(Hoadon Entity);
 
     abstract public void updateThanhToan(Hoadon Entity);
-    
+
     abstract public void updateTrangThai(Hoadon Entity);
-    
+
     abstract public void updateThanhtien(Hoadon Entity);
-    
+
     abstract public void updateLydohuy(Hoadon Entity);
-    
+
     abstract public void updateSLSPHUY(Hoadon Entity);
 
     abstract public void delete(Hoadon Entity);
 
     abstract public Hoadon selectById(int id);
-    
+
     abstract public List<Hoadon> selectAll();
+
     abstract public List<Hoadon> selectAll_trangthai1();
 
     abstract public List<Hoadon> selectAll_trangthai0();

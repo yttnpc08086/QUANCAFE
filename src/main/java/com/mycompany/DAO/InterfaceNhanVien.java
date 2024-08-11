@@ -9,5 +9,5 @@ package com.mycompany.DAO;
  * @author ASUS
  */
 interface InterfaceNhanVien {
-    
+
 }

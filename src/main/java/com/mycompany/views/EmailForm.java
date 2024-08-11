@@ -4,7 +4,6 @@
  */
 package com.mycompany.views;
 
-
 /**
  *
  * @author ASUS

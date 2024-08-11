@@ -177,7 +177,6 @@ public class DoiMatKhauJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnDoiMKActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDoiMK;
     private javax.swing.JButton btnHuy;

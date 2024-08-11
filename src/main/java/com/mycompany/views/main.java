@@ -629,7 +629,7 @@ public class main extends javax.swing.JFrame {
 //             Mở cửa sổ đăng nhập mới
             JFrame dangNhapFrame = new JFrame("Đăng Nhập");
             dangNhapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            dangNhapFrame.setSize(726,470); // Kích thước tùy chỉnh
+            dangNhapFrame.setSize(726, 470); // Kích thước tùy chỉnh
 //             Thêm DangNhapJPanel vào JFrame
             DangNhapJPanel dangNhapPanel = new DangNhapJPanel();
             dangNhapFrame.add(dangNhapPanel);

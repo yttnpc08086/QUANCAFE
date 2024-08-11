@@ -11,8 +11,9 @@ import com.mycompany.Model.NhanVien;
  * @author Admin
  */
 public class Auth {
+
     public static NhanVien user = null;
-    
+
     public static void login(NhanVien nhanVien) {
         user = nhanVien;
     }
@@ -20,14 +21,16 @@ public class Auth {
     public static void logout() {
         user = null;
     }
-    
-    public static void clear(){
+
+    public static void clear() {
         Auth.user = null;
     }
-    public static boolean isLogin(){
+
+    public static boolean isLogin() {
         return Auth.user != null;
     }
-    public static boolean isManager(){
+
+    public static boolean isManager() {
         return Auth.isLogin() && user.isVaiTro();
     }
 }

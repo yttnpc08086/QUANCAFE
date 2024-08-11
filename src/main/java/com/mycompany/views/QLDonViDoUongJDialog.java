@@ -9,6 +9,7 @@ import com.mycompany.DAO.DonViSanPhamDao;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Admin
@@ -20,6 +21,7 @@ public class QLDonViDoUongJDialog extends javax.swing.JDialog {
      */
     DonViSanPhamDao dao = new DonViSanPhamDao();
     int row;
+
     public QLDonViDoUongJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -296,13 +298,12 @@ public class QLDonViDoUongJDialog extends javax.swing.JDialog {
         });
     }
 
-    
     private void filltableDonVi() {
         DefaultTableModel model = (DefaultTableModel) tbldonvi.getModel();
         model.setRowCount(0);
         List<DonViSanPham> list = dao.selectAll();
         for (DonViSanPham x : list) {
-            model.addRow(new Object[]{x.getID_DonviSP(), x.getTenDonvi(), x.getKichthuoc(),x.getThemTien()});
+            model.addRow(new Object[]{x.getID_DonviSP(), x.getTenDonvi(), x.getKichthuoc(), x.getThemTien()});
         }
     }
 

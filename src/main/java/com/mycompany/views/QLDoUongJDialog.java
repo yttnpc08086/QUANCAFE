@@ -9,6 +9,7 @@ import com.mycompany.DAO.LoaiSanPhamDao;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Admin
@@ -20,7 +21,7 @@ public class QLDoUongJDialog extends javax.swing.JDialog {
      */
     LoaiSanPhamDao daolsp = new LoaiSanPhamDao();
     int row;
-    
+
     public QLDoUongJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -243,7 +244,6 @@ public class QLDoUongJDialog extends javax.swing.JDialog {
         update();
     }//GEN-LAST:event_btnsuaActionPerformed
 
-    
     private void filltableDoUong() { // hieenr thij len bang
         DefaultTableModel model = (DefaultTableModel) tbltentheloai.getModel();
         model.setRowCount(0);
@@ -377,7 +377,7 @@ public class QLDoUongJDialog extends javax.swing.JDialog {
             }
         } else ;
     }
-    
+
     /**
      * @param args the command line arguments
      */

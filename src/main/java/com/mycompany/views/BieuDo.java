@@ -218,7 +218,6 @@ public class BieuDo extends javax.swing.JFrame {
 
 //        tk.setDataToChart1_find(jPanel4 ,a,b);
 //        tk.setDataToChart2_find(jPanel5,a,b);
-
     }//GEN-LAST:event_btnthongkeActionPerformed
 
     /**

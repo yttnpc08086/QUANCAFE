@@ -20,9 +20,11 @@ public class LoaiDonJDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }
     boolean buttonsa;
-    public void buttonselect(boolean button){
+
+    public void buttonselect(boolean button) {
         buttonsa = button;
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -130,7 +132,7 @@ public class LoaiDonJDialog extends javax.swing.JDialog {
         buttonselect(false);
         this.setVisible(false);
     }//GEN-LAST:event_btndonmangveActionPerformed
-boolean exit = false;
+    boolean exit = false;
     private void lblExitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExitMouseClicked
         // TODO add your handling code here:
         exit = true;

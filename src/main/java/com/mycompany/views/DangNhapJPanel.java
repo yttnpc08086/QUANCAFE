@@ -266,7 +266,7 @@ public class DangNhapJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btndangnhapActionPerformed
 
     private void btnthoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthoatActionPerformed
-        
+
     }//GEN-LAST:event_btnthoatActionPerformed
 
     private void txtpassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtpassActionPerformed
@@ -276,7 +276,6 @@ public class DangNhapJPanel extends javax.swing.JPanel {
     private void lblQuenPassMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenPassMouseClicked
         new QuenMatKhauJDialog((java.awt.Frame) this.getParent(), true).setVisible(true);
     }//GEN-LAST:event_lblQuenPassMouseClicked
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btndangnhap;

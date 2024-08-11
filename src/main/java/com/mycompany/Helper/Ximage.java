@@ -17,24 +17,25 @@ import javax.swing.ImageIcon;
  * @author Admin
  */
 public class Ximage {
-    
+
     // lưu file
-    public static void save(File src){
+    public static void save(File src) {
         File dst = new File("logos", src.getName());
-        if(!dst.getParentFile().exists()){
+        if (!dst.getParentFile().exists()) {
             dst.getParentFile().mkdirs();
         }
         try {
             Path from = Paths.get(src.getAbsolutePath());
             Path to = Paths.get(dst.getAbsolutePath());
-            Files.copy(from, to,StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
     // đọc file
-    public static ImageIcon read(String fileName){
-        File path = new File("logos",fileName);
+    public static ImageIcon read(String fileName) {
+        File path = new File("logos", fileName);
         return new ImageIcon(new ImageIcon(path.getAbsolutePath()).getImage().getScaledInstance(200, 250, Image.SCALE_DEFAULT));
     }
 }

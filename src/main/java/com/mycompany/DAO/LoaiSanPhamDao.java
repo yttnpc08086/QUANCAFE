@@ -4,27 +4,26 @@
  */
 package com.mycompany.DAO;
 
-
 import com.mycompany.Model.LoaiSanPham;
 import java.util.*;
 import java.sql.ResultSet;
 import com.mycompany.Helper.ConnectUtil;
+
 /**
  *
  * @author Admin
  */
-public class LoaiSanPhamDao implements InterfaceLoaiSanPham{
-    
+public class LoaiSanPhamDao implements InterfaceLoaiSanPham {
+
     String insert = "insert LoaiSanPham(ID_LoaiSP,Tenloai) values(?,?)";
     String selectAll = "select * from LoaiSanPham";
     String selectByid = "select * from LoaiSanPham where ID_LoaiSP =?";
-    String sqlUpdate  ="update LoaiSanPham set Tenloai= ? where ID_LoaiSP=?";
+    String sqlUpdate = "update LoaiSanPham set Tenloai= ? where ID_LoaiSP=?";
     String sqlDelete = "delete LoaiSanPham where ID_LoaiSP = ?";
-    
-    
+
     @Override
     public void insert(LoaiSanPham lsp) {
-        ConnectUtil.update(insert, lsp.getID_LoaiSP(),lsp.getTenLoai());
+        ConnectUtil.update(insert, lsp.getID_LoaiSP(), lsp.getTenLoai());
     }
 
     @Override
@@ -44,7 +43,7 @@ public class LoaiSanPhamDao implements InterfaceLoaiSanPham{
 
     @Override
     public LoaiSanPham selectID(String id) {
-        return selectBySQL(selectByid,id).get(0);
+        return selectBySQL(selectByid, id).get(0);
     }
 
     @Override
@@ -64,22 +63,26 @@ public class LoaiSanPhamDao implements InterfaceLoaiSanPham{
         }
         return list;
     }
+
     // lay du lieu qua ten
-    public String selectIdByName(String name){
+    public String selectIdByName(String name) {
         String sql = "select * from LoaiSanPham where TenLoai = ?";
         return selectBySQL(sql, name).get(0).getID_LoaiSP();
     }
-        // lấy tên sản phẩm thong qua id
+    // lấy tên sản phẩm thong qua id
+
     public String selectNameByID(String id) {
         return selectBySQL(selectByid, id).get(0).getTenLoai();
     }
-    public LoaiSanPham selectId_LSP(String id){
+
+    public LoaiSanPham selectId_LSP(String id) {
         List<LoaiSanPham> list = this.selectBySQL(selectByid, id);
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             return null;
         }
         return list.get(0);
     }
+
     /// tự tăng mã
     public int selectMaLOAISP() {
         String sql = "select max(cast(substring(ID_LoaiSP,4,LEN(ID_LoaiSP))as int)) from  LoaiSanPham";

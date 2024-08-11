@@ -21,7 +21,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author Admin
  */
-
 public class XEcel {
 
     private JTable table; // Giả sử bạn đã khai báo bảng này ở đâu đó trong lớp

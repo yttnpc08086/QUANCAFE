@@ -9,6 +9,7 @@ package com.mycompany.DAO;
  * @author sonlu
  */
 public class ThongKeSPBan {
+
     private String Tensp;
     private int soluong;
 
@@ -35,5 +36,5 @@ public class ThongKeSPBan {
     public void setSoluong(int soluong) {
         this.soluong = soluong;
     }
-    
+
 }

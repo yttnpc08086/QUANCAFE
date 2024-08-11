@@ -4,8 +4,6 @@
  */
 package com.mycompany.Helper;
 
-
-
 import java.awt.Image;
 import java.io.File;
 import java.net.URL;
@@ -14,11 +12,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import javax.swing.ImageIcon;
+
 /**
  *
  * @author Admin
  */
 public class Ximages {
+
     public static void save(File src) {
         File dst = new File("logos", src.getName());
         if (!dst.getParentFile().exists()) {

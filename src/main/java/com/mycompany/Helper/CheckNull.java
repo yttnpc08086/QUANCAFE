@@ -13,13 +13,14 @@ import javax.swing.JTextField;
  * @author Admin
  */
 public class CheckNull {
-    public static boolean Check(JTextField tf, String mss){
-        if(tf.getText().equals("")){
+
+    public static boolean Check(JTextField tf, String mss) {
+        if (tf.getText().equals("")) {
             JOptionPane.showMessageDialog(null, mss);
             tf.setBackground(Color.yellow);
             tf.requestFocus();
             return true;
-        }else{
+        } else {
             tf.setBackground(Color.white);
         }
         return false;

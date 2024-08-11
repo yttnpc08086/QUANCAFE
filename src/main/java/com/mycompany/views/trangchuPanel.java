@@ -50,7 +50,6 @@ public class trangchuPanel extends JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables

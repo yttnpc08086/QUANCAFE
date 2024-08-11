@@ -58,7 +58,6 @@ public class DangnhapJDialog extends javax.swing.JDialog {
         }
     }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -259,7 +258,6 @@ public class DangnhapJDialog extends javax.swing.JDialog {
     private void txtpassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtpassActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtpassActionPerformed
-
 
     private void lblQuenPassMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenPassMouseClicked
         new QuenMatKhauJDialog((java.awt.Frame) this.getParent(), true).setVisible(true);

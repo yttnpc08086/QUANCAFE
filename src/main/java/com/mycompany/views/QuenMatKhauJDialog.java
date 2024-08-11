@@ -172,7 +172,6 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
     private void btnguimaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguimaActionPerformed
         try {
             String email = txtEmail.getText().trim();
@@ -186,13 +185,13 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
                         txtMaxacnhan.setEnabled(true);
                         MsgBox.alert(this, "Mã xác nhận đã được gửi tới email của bạn.");
                     } else {
-                       MsgBox.alert(this, "Mã xác nhận đã được gửi, vui lòng chờ 1 phút để gửi lại.");
+                        MsgBox.alert(this, "Mã xác nhận đã được gửi, vui lòng chờ 1 phút để gửi lại.");
                     }
                 } else {
-                  MsgBox.alert(this, "Email không tồn tại trong hệ thống.");
+                    MsgBox.alert(this, "Email không tồn tại trong hệ thống.");
                 }
             } else {
-               MsgBox.alert(this, "Vui lòng nhập email.");
+                MsgBox.alert(this, "Vui lòng nhập email.");
             }
         } catch (Exception e) {
             e.printStackTrace();

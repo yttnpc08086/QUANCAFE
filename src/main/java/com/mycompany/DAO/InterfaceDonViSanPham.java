@@ -3,17 +3,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
 package com.mycompany.DAO;
+
 import com.mycompany.Model.DonViSanPham;
 import java.util.List;
+
 /**
  *
  * @author Admin
  */
 public interface InterfaceDonViSanPham {
+
     abstract public void insert(DonViSanPham dv);
+
     abstract public void update(DonViSanPham dv);
+
     abstract public void delete(String id);
+
     abstract public List<DonViSanPham> selectAll();
+
     abstract public DonViSanPham selectID(String id);
-    abstract public List<DonViSanPham> selectBySQL(String sql, Object...agrs);
+
+    abstract public List<DonViSanPham> selectBySQL(String sql, Object... agrs);
 }

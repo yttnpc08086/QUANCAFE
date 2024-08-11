@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.DAO;
+
 import com.mycompany.Model.DonViSanPham;
 import java.util.*;
 import com.mycompany.Helper.ConnectUtil;
@@ -12,22 +13,22 @@ import java.sql.ResultSet;
  *
  * @author Admin
  */
-public class DonViSanPhamDao implements InterfaceDonViSanPham{
-    
+public class DonViSanPhamDao implements InterfaceDonViSanPham {
+
     String insert = "insert DonViSanPham(ID_DonviSP, TenDonvi,Kichthuoc,ThemTien) values (?,?,?,?)";
-    String selectAll ="select * from DonViSanPham";
+    String selectAll = "select * from DonViSanPham";
     String selectId = "select * from DonViSanPham where ID_DonviSP = ?";
     String sqlUpdate = "update DonViSanPham set TENDONVI = ?, KICHTHUOC=?, ThemTien=? where ID_DONVISP = ?";
     String sqlDelete = "delete DonViSanPham where ID_DonviSP =?";
-    
+
     @Override
     public void insert(DonViSanPham dv) {
-        ConnectUtil.update(insert, dv.getID_DonviSP(), dv.getTenDonvi(), dv.getKichthuoc(),dv.getThemTien());
+        ConnectUtil.update(insert, dv.getID_DonviSP(), dv.getTenDonvi(), dv.getKichthuoc(), dv.getThemTien());
     }
 
     @Override
     public void update(DonViSanPham dv) {
-        ConnectUtil.update(sqlUpdate, dv.getTenDonvi(), dv.getKichthuoc(),dv.getThemTien(), dv.getID_DonviSP());
+        ConnectUtil.update(sqlUpdate, dv.getTenDonvi(), dv.getKichthuoc(), dv.getThemTien(), dv.getID_DonviSP());
     }
 
     @Override
@@ -64,22 +65,24 @@ public class DonViSanPhamDao implements InterfaceDonViSanPham{
         }
         return list;
     }
-    
+
 //    public String selectNameByID(String id) {
 //        return selectBySQL(selectId, id).get(0).getTenDonvi();
 //    }
-    public DonViSanPham selectGiaupsize(String id){
+    public DonViSanPham selectGiaupsize(String id) {
         String sql = "select ThemTien where ID_DonviSP=?";
-       List<DonViSanPham> dv = this.selectBySQL(sql, id);
-       if(dv.isEmpty()){
-           return null;
-       }
-       return dv.get(0);
+        List<DonViSanPham> dv = this.selectBySQL(sql, id);
+        if (dv.isEmpty()) {
+            return null;
+        }
+        return dv.get(0);
     }
-    public String selectByName(String name){
+
+    public String selectByName(String name) {
         String sql = "select * from DonViSanPham where TenDonvi = ?";
         return selectBySQL(sql, name).get(0).getID_DonviSP();
     }
+
     public DonViSanPham selectid_DVDU(String id) {
         List<DonViSanPham> list = this.selectBySQL(selectId, id);
         if (list.isEmpty()) {

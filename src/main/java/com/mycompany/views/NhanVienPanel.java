@@ -559,7 +559,6 @@ public class NhanVienPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDiachiActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExcel;
     private javax.swing.JButton btnSua;
@@ -969,7 +968,7 @@ public class NhanVienPanel extends javax.swing.JPanel {
 
     private boolean checkSame() {
         if (nvDao.selectById(txtMaNV.getText()) != null) {
-          txtMaNV.setText("NV" + (nvDao.selectMaxId() + 1));
+            txtMaNV.setText("NV" + (nvDao.selectMaxId() + 1));
             MsgBox.alert(this, "Mã nhân viên đã tồn tại. Mã nhân viên đã được tạo mới!");
             return true;
         }

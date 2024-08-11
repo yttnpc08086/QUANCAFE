@@ -516,7 +516,6 @@ public class ThongKeJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btntinhtongActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static com.toedter.calendar.JDateChooser DateDenNgay;
     public static com.toedter.calendar.JDateChooser DateTuNgay;

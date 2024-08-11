@@ -12,7 +12,6 @@ import javax.swing.JOptionPane;
  *
  * @author ASUS
  */
-
 public class DoiMatKhauJDialog extends JDialog {
 
     /**

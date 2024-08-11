@@ -9,11 +9,12 @@ package com.mycompany.Model;
  * @author Admin
  */
 public class DonViSanPham {
+
     private String ID_DonviSP;
     private String TenDonvi;
     private int Kichthuoc;
     private int ThemTien;
-    
+
     public DonViSanPham() {
     }
 
@@ -55,9 +56,9 @@ public class DonViSanPham {
     public void setThemTien(int ThemTien) {
         this.ThemTien = ThemTien;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return TenDonvi;
     }
 

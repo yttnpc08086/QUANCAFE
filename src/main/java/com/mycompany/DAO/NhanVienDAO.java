@@ -24,7 +24,7 @@ public class NhanVienDAO implements InterfaceNhanVien {
 //    private String UPDATE_PASS_SQL = "UPDATE NhanVien SET Pass = ? WHERE Email = ?";
 
     public void insert(NhanVien entity) {
-            System.out.println("Inserting NhanVien with Username: " + entity.getUserName());
+        System.out.println("Inserting NhanVien with Username: " + entity.getUserName());
         ConnectUtil.update(INSERT_SQL,
                 entity.getId_Nhanvien(),
                 entity.getTenNV(),

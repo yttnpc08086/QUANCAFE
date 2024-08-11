@@ -9,6 +9,7 @@ package com.mycompany.Model;
  * @author Admin
  */
 public class SanPham {
+
     private String id_sp;
     private String ten_sp;
     private int gia_sp;
@@ -16,9 +17,9 @@ public class SanPham {
     private String id_loaiSP;
     private boolean Trangthai;
     private String hinh;
-    
-    public SanPham(){
-        
+
+    public SanPham() {
+
     }
 
     public SanPham(String id_sp, String ten_sp, int gia_sp, String id_donviSP, String id_loaiSP, boolean Trangthai, String hinh) {
@@ -86,8 +87,9 @@ public class SanPham {
     public void setHinh(String hinh) {
         this.hinh = hinh;
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         return ten_sp;
     }
 
