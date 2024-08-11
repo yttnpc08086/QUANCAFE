@@ -1,8 +1,7 @@
 package com.mycompany.DAO;
 
-import com.mycompany.Model.NhanVien;
 import com.mycompany.Helper.ConnectUtil;
-
+import com.mycompany.Model.NhanVien;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.List;
 public class NhanVienDAO implements InterfaceNhanVien {
 
     private String INSERT_SQL = "INSERT INTO NhanVien VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
-    private String UPDATE_SQL = "UPDATE NhanVien SET TenNV = ?, GioiTinh = ?, Ngaysinh = ?, Diachi = ?, Email = ?, SDT = ?, Username = ?, Pass = ?, Vaitro = ?, Trangthai = ?, Hinh = ? WHERE ID_Nhanvien = ?";
+    private String UPDATE_SQL = "UPDATE NhanVien SET TenNV = ?, GioiTinh = ?, Ngaysinh = ?, Diachi = ?, Email = ?, SDT = ?, Username = ?, Pass = ?, Vaitro = ?, Trangthai = ?, WHERE ID_Nhanvien = ?";
     private String DELETE_HD_SQL = "UPDATE NhanVien SET Trangthai = 0 WHERE ID_Nhanvien = ? AND Trangthai = 1";
     private String DELETE_KHD_SQL = "DELETE FROM NhanVien WHERE ID_Nhanvien = ? AND Trangthai = 0";
     private String SELECT_ALL_SQL = "SELECT * FROM NhanVien";
@@ -32,8 +31,7 @@ public class NhanVienDAO implements InterfaceNhanVien {
                 entity.getUserName(),
                 entity.getPass(),
                 entity.isVaiTro(),
-                entity.isTrangThai(),
-                entity.getHinh());
+                entity.isTrangThai());
     }
 
     public void update(NhanVien entity) {
@@ -48,7 +46,6 @@ public class NhanVienDAO implements InterfaceNhanVien {
                 entity.getPass(),
                 entity.isVaiTro(),
                 entity.isTrangThai(),
-                entity.getHinh(),
                 entity.getId_Nhanvien());
     }
 
@@ -97,7 +94,6 @@ public class NhanVienDAO implements InterfaceNhanVien {
                 entity.setPass(rs.getString("Pass"));
                 entity.setVaiTro(rs.getBoolean("Vaitro"));
                 entity.setTrangThai(rs.getBoolean("Trangthai"));
-                entity.setHinh(rs.getString("Hinh"));
                 list.add(entity);
             }
             rs.getStatement().getConnection().close();
@@ -174,7 +170,6 @@ public class NhanVienDAO implements InterfaceNhanVien {
                 nv.setDiaChi(rs.getString("DiaChi"));
                 nv.setEmail(rs.getString("Email"));
                 nv.setVaiTro(rs.getBoolean("Vaitro"));
-                nv.setHinh(rs.getString("Hinh"));
                 nv.setTrangThai(rs.getBoolean("Trangthai"));
                 list.add(nv);
             }
@@ -183,7 +178,5 @@ public class NhanVienDAO implements InterfaceNhanVien {
         }
         return list;
     }
-
-   
 
 }
