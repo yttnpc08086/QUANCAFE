@@ -81,7 +81,7 @@ public class NhanVienDAO implements InterfaceNhanVien {
     public List<NhanVien> selectAll() {
         return selectBySql(SELECT_ALL_SQL);
     }
-
+    
     public List<NhanVien> selectBySql(String sql, Object... args) {
         List<NhanVien> list = new ArrayList<>();
         try {
