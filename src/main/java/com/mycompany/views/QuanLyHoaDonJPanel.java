@@ -30,24 +30,29 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
         initTableModels();
         loadData();
 
+        btn_lammoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_lammoiActionPerformed(evt);
+            }
+        });
+
     }
 
     private void loadData() {
         loadHoaDonData();
-        loadHoaDonChiTietData();
+//        loadHoaDonChiTietData();
 //        filltoComboboxLSP();
     }
 
     private void loadHoaDonData() {
-        String sql = "SELECT * FROM HoaDon";
-        loadTableData(sql, tblHD, new String[]{"ID_Hoadon", "ID_Nhanvien", "Ngaytao", "TTThanhtoan", "Thanhtien", "ghichu", "SDT", "Ten", "tenShip"});
+        String sql = "SELECT ID_Hoadon, ID_Nhanvien, Ngaytao, Ten, ghichu, Thanhtien FROM HoaDon";
+        loadTableData(sql, tblHD, new String[]{"Mã DH", "Mã NV", "Ngày tạo", "Tên Khách Hàng", "Ghi chú", "Thành Tiền"});
     }
 
-    private void loadHoaDonChiTietData() {
-        String sql = "SELECT * FROM HoaDonChiTiet";
-        loadTableData(sql, tblHDCT, new String[]{"ID_HoaDon", "ID_SanPham", "SoLuong", "Gia", "TongGia", "TTthanhtoan", "Lydohuy", "ghichu"});
-    }
-
+//    private void loadHoaDonChiTietData() {
+//        String sql = "SELECT * FROM HoaDonChiTiet";
+//        loadTableData(sql, tblHDCT, new String[]{"ID_HoaDon", "ID_SanPham", "SoLuong", "Gia", "TongGia", "TTthanhtoan", "Lydohuy", "ghichu"});
+//    }
     private void loadTableData(String sql, javax.swing.JTable table, String[] columnNames) {
         ResultSet rs = null;
         try {
@@ -60,9 +65,12 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
 
             while (rs.next()) {
                 Vector<Object> row = new Vector<>();
-                for (String columnName : columnNames) {
-                    row.add(rs.getObject(columnName));
-                }
+                row.add(rs.getObject("ID_Hoadon")); // Mã DH
+                row.add(rs.getObject("ID_Nhanvien")); // Mã NV
+                row.add(rs.getObject("Ngaytao")); // Ngày tạo
+                row.add(rs.getObject("Ten")); // Tên Khách Hàng
+                row.add(rs.getObject("ghichu")); // Ghi chú
+                row.add(rs.getObject("Thanhtien")); // Thành Tiền
                 model.addRow(row);
             }
 
@@ -101,6 +109,7 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -110,8 +119,8 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
         txtMaNV = new javax.swing.JTextField();
         btn_lammoi = new javax.swing.JButton();
         txtHD = new javax.swing.JTextField();
-        cbTungay = new javax.swing.JComboBox<>();
-        cbDenngay = new javax.swing.JComboBox<>();
+        DateTuNgay = new com.toedter.calendar.JDateChooser();
+        DateDenNgay = new com.toedter.calendar.JDateChooser();
         jPanel1 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -160,16 +169,17 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
         btn_lammoi.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btn_lammoi.setText("Làm Mới");
         btn_lammoi.setPreferredSize(new java.awt.Dimension(25, 25));
+        btn_lammoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_lammoiActionPerformed(evt);
+            }
+        });
 
         txtHD.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtHDKeyReleased(evt);
             }
         });
-
-        cbTungay.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2024-07-20 14:30:00.000", "2024-07-21 15:00:00.000", "2024-07-22 16:00:00.000", "2024-07-23 17:00:00.000", "2024-07-24 18:00:00.000", "2024-07-27 15:00:00.000", "2024-07-29 15:00:00.000", " " }));
-
-        cbDenngay.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2024-07-20 14:30:00.000", "2024-07-21 15:00:00.000", "2024-07-22 16:00:00.000", "2024-07-23 17:00:00.000", "2024-07-24 18:00:00.000", "2024-07-27 15:00:00.000", "2024-07-29 15:00:00.000" }));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -180,37 +190,39 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtHD)
-                    .addComponent(cbTungay, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtHD, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(DateTuNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(24, 24, 24)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtMaNV)
-                    .addComponent(cbDenngay, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtMaNV, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DateDenNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btn_lammoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnTim, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnTim, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(93, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
-                        .addComponent(jLabel3)
-                        .addComponent(cbTungay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnTim, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
-                        .addComponent(cbDenngay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                        .addComponent(jLabel3))
+                    .addComponent(DateTuNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DateDenNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTim, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtHD)
                     .addComponent(jLabel2)
@@ -224,11 +236,11 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
 
         jLabel5.setText("Mã HD");
 
-        jLabel8.setText("Tên Khách Hàng:");
+        jLabel8.setText("Mã Sản Phẩm");
 
-        jLabel9.setText("Mã NV:");
+        jLabel9.setText("Giá");
 
-        jLabel10.setText("Ngày tạo:");
+        jLabel10.setText("Tổng Giá");
 
         tblHDCT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -261,40 +273,40 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(16, 16, 16)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTenKH)
-                                    .addComponent(txtmaNV, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtMHD, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel10)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNgayTao, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtTenKH)
+                            .addComponent(txtmaNV)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtMHD, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(32, 32, 32)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtNgayTao, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel10)
-                    .addComponent(txtMHD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNgayTao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(txtMHD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(txtNgayTao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
@@ -303,9 +315,9 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(txtmaNV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(301, 301, 301))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(287, Short.MAX_VALUE))
         );
 
         tblHD.setModel(new javax.swing.table.DefaultTableModel(
@@ -330,25 +342,27 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 567, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 226, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -358,38 +372,37 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void btnTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimActionPerformed
-        String startDate = (String) cbTungay.getSelectedItem();
-        String endDate = (String) cbDenngay.getSelectedItem();
+        java.util.Date startDateUtil = DateTuNgay.getDate();
+        java.util.Date endDateUtil = DateDenNgay.getDate();
 
-        if (startDate != null && endDate != null) {
-            // Gọi phương thức filterData với ngày bắt đầu và ngày kết thúc
+        if (startDateUtil != null && endDateUtil != null) {
+            // Convert java.util.Date to java.sql.Date for use in SQL query
+            java.sql.Date startDate = new java.sql.Date(startDateUtil.getTime());
+            java.sql.Date endDate = new java.sql.Date(endDateUtil.getTime());
+
+            // Call the filterData method with the start and end dates
             filterData(startDate, endDate);
         } else {
             JOptionPane.showMessageDialog(this, "Please select both start and end dates.");
         }
     }//GEN-LAST:event_btnTimActionPerformed
 
-    private void filterData(String startDate, String endDate) {
+    private void filterData(java.sql.Date startDate, java.sql.Date endDate) {
         DefaultTableModel modelHoadon = (DefaultTableModel) tblHD.getModel();
+        modelHoadon.setRowCount(0); // Clear the table before loading new data
 
         try {
-            // Xóa dữ liệu cũ
-            modelHoadon.setRowCount(0);
+            String sql = "SELECT * FROM HoaDon WHERE Ngaytao BETWEEN ? AND ?";
+            ResultSet rs = ConnectUtil.query(sql, startDate, endDate);
 
-            ResultSet rs1 = ConnectUtil.query("SELECT * FROM HoaDon WHERE Trangthai = 1 AND Ngaytao BETWEEN ? AND ?", startDate, endDate);
-            while (rs1.next()) {
+            while (rs.next()) {
                 modelHoadon.addRow(new Object[]{
-                    rs1.getInt("ID_Hoadon"),
-                    rs1.getString("ID_Nhanvien"),
-                    rs1.getDate("Ngaytao"),
-                    rs1.getInt("Thanhtien"),
-                    rs1.getString("Lydohuy"),
-                    rs1.getInt("Soluongsanphamhuy"),
-                    rs1.getString("ghichu"),
-                    rs1.getString("SDT"),
-                    rs1.getString("Ten"),
-                    rs1.getString("diaChi"),
-                    rs1.getInt("tenShip")
+                    rs.getInt("ID_Hoadon"),
+                    rs.getString("ID_Nhanvien"),
+                    rs.getDate("Ngaytao"),
+                    rs.getString("Ten"),
+                    rs.getString("ghichu"),
+                    rs.getInt("Thanhtien")
                 });
             }
         } catch (Exception e) {
@@ -398,39 +411,108 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
         }
     }
 
-    private void txtMaNVKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMaNVKeyReleased
-        String searchValue = txtMaNV.getText().trim();
+    private void tblHDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHDMouseClicked
+        // TODO add your handling code here:
+        int selectedRow = tblHD.getSelectedRow();
+        if (selectedRow >= 0) {
+            // Lấy ID_HoaDon từ dòng được chọn trong bảng tblHD
+            String idHoaDon = tblHD.getValueAt(selectedRow, 0).toString(); // Assuming ID_HoaDon is in the first column
+            String idNhanVien = tblHD.getValueAt(selectedRow, 1).toString(); // Assuming ID_Nhanvien is in the second column
 
-        // Example: Filter the table based on the searchValue
-        filterTableBasedOnMaNV(searchValue);
+            txtHD.setText(idHoaDon);
+            txtMaNV.setText(idNhanVien);
+
+            loadHoaDonChiTietData(idHoaDon);
+            // Truy vấn dữ liệu từ bảng HoaDonChiTiet dựa trên ID_HoaDon
+            String sql = "SELECT * FROM HoaDonChiTiet WHERE ID_HoaDon = ?";
+            ResultSet rs = null;
+            try {
+                rs = ConnectUtil.query(sql, idHoaDon);
+                if (rs.next()) {
+                    // Hiển thị dữ liệu vào các trường nhập liệu
+                    txtMHD.setText(rs.getString("ID_HoaDon"));
+                    txtTenKH.setText(rs.getString("ID_SanPham"));
+                    txtmaNV.setText(rs.getString("Gia"));
+                    txtNgayTao.setText(rs.getString("TongGia"));
+
+                    // Hiển thị dữ liệu vào bảng tblHDCT
+                    DefaultTableModel model = (DefaultTableModel) tblHDCT.getModel();
+                    model.setRowCount(0); // Xóa dữ liệu cũ trong bảng tblHDCT
+                    do {
+                        Vector<Object> row = new Vector<>();
+                        row.add(rs.getString("ghichu"));
+                        row.add(rs.getInt("SoLuong"));
+                        model.addRow(row);
+                    } while (rs.next());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Lỗi khi lấy dữ liệu: " + e.getMessage());
+            } finally {
+                if (rs != null) {
+                    try {
+                        rs.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_tblHDMouseClicked
+
+    private void loadHoaDonChiTietData(String idHoaDon) {
+        String sql = "SELECT * FROM HoaDonChiTiet WHERE ID_HoaDon = ?";
+        ResultSet rs = null;
+        try {
+            rs = ConnectUtil.query(sql, idHoaDon);
+            DefaultTableModel model = (DefaultTableModel) tblHDCT.getModel();
+            model.setRowCount(0); // Clear the table before adding new data
+
+            while (rs.next()) {
+                Vector<Object> row = new Vector<>();
+                row.add(rs.getString("ID_HoaDon")); // Add ID_HoaDon
+                row.add(rs.getString("ID_SanPham")); // Add ID_SanPham
+                row.add(rs.getInt("SoLuong")); // Add SoLuong
+                row.add(rs.getDouble("Gia")); // Add Gia
+                row.add(rs.getDouble("TongGia")); // Add TongGia
+                row.add(rs.getString("TTthanhtoan")); // Add TTthanhtoan
+                row.add(rs.getString("Lydohuy")); // Add Lydohuy
+                row.add(rs.getString("ghichu")); // Add ghichu
+                model.addRow(row);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi lấy dữ liệu: " + e.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
-// Example method to filter table
-    private void filterTableBasedOnMaNV(String searchValue) {
-        // Logic to filter the table data based on searchValue
-        // For example, you might have a TableRowSorter to apply filters
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblHD.getModel());
-        tblHD.setRowSorter(sorter);
+    private void tblHDCTMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHDCTMouseClicked
+        int selectedRow = tblHDCT.getSelectedRow();
 
-        if (!searchValue.isEmpty()) {
-            sorter.setRowFilter(RowFilter.regexFilter(searchValue));
-        } else {
-            sorter.setRowFilter(null);  // Reset filter
+        if (selectedRow >= 0) {
+            String someField1 = (String) tblHDCT.getValueAt(selectedRow, 0);
+            String someField2 = (String) tblHDCT.getValueAt(selectedRow, 1);
+
+            txtHD.setText(someField1);
+            txtMHD.setText(someField2);
         }
-    }//GEN-LAST:event_txtMaNVKeyReleased
+    }//GEN-LAST:event_tblHDCTMouseClicked
 
     private void txtHDKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHDKeyReleased
-        // TODO add your handling code here:
         String searchValue = txtHD.getText().trim();
 
-        // Example: Filter the table based on the searchValue
         filterTableBasedOnHD(searchValue);
     }
 
-// Example method to filter table
     private void filterTableBasedOnHD(String searchValue) {
-        // Logic to filter the table data based on searchValue
-        // For example, you might have a TableRowSorter to apply filters
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblHD.getModel());
         tblHD.setRowSorter(sorter);
 
@@ -441,43 +523,47 @@ public class QuanLyHoaDonJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_txtHDKeyReleased
 
-    private void tblHDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHDMouseClicked
-        // TODO add your handling code here:
-        int selectedRow = tblHD.getSelectedRow();
+    private void txtMaNVKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMaNVKeyReleased
+        String searchValue = txtMaNV.getText().trim();
 
-        if (selectedRow >= 0) {
-            // Get data from the selected row
-            String maNV = (String) tblHD.getValueAt(selectedRow, 0); // assuming MaNV is in the first column
-            String otherData = (String) tblHD.getValueAt(selectedRow, 1); // assuming otherData is in the second column
+        filterTableBasedOnMaNV(searchValue);
+    }
 
-            // Set the data to the appropriate text fields
-            txtMaNV.setText(maNV);
-            // Set other fields as needed
+    private void filterTableBasedOnMaNV(String searchValue) {
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblHD.getModel());
+        tblHD.setRowSorter(sorter);
+
+        if (!searchValue.isEmpty()) {
+            sorter.setRowFilter(RowFilter.regexFilter(searchValue));
+        } else {
+            sorter.setRowFilter(null);  // Reset filter
         }
-    }//GEN-LAST:event_tblHDMouseClicked
+    }//GEN-LAST:event_txtMaNVKeyReleased
 
-    private void tblHDCTMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHDCTMouseClicked
+    private void btn_lammoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_lammoiActionPerformed
         // TODO add your handling code here:
-        int selectedRow = tblHDCT.getSelectedRow();
+        txtHD.setText("");
+        txtMaNV.setText("");
+        txtMHD.setText("");
+        txtTenKH.setText("");
+        txtmaNV.setText("");
+        txtNgayTao.setText("");
 
-        if (selectedRow >= 0) {
-            // Get data from the selected row
-            String someField1 = (String) tblHDCT.getValueAt(selectedRow, 0); // assuming someField1 is in the first column
-            String someField2 = (String) tblHDCT.getValueAt(selectedRow, 1); // assuming someField2 is in the second column
+//        // Làm mới bảng tblHD và tblHDCT nếu cần
+//        DefaultTableModel modelHoadon = (DefaultTableModel) tblHD.getModel();
+//        modelHoadon.setRowCount(0); // Xóa toàn bộ dữ liệu trong bảng tblHD
+        DefaultTableModel modelHoadonCT = (DefaultTableModel) tblHDCT.getModel();
+        modelHoadonCT.setRowCount(0); // Xóa toàn bộ dữ liệu trong bảng tblHDCT
 
-            // Set the data to the appropriate text fields
-            // For example:
-            txtHD.setText(someField1);
-            txtMHD.setText(someField2);
-        }
-    }//GEN-LAST:event_tblHDCTMouseClicked
+    }//GEN-LAST:event_btn_lammoiActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static com.toedter.calendar.JDateChooser DateDenNgay;
+    public static com.toedter.calendar.JDateChooser DateTuNgay;
     private javax.swing.JButton btnTim;
     private javax.swing.JButton btn_lammoi;
-    private javax.swing.JComboBox<String> cbDenngay;
-    private javax.swing.JComboBox<String> cbTungay;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

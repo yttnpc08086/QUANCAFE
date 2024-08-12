@@ -91,6 +91,10 @@ public class QuanLyBanHangJPanel extends javax.swing.JPanel {
 
     }
 
+    public void clearTableData() {
+        modelJTable1.setRowCount(0); // Xóa tất cả các hàng trong bảng
+    }
+
     private String generateInvoiceNumber() {
         int nextInvoiceNumber = 1; // Giá trị mặc định nếu không có số hóa đơn nào
 
@@ -166,6 +170,7 @@ public class QuanLyBanHangJPanel extends javax.swing.JPanel {
             String size = rowData.get(tblSize.getColumnModel().getColumnIndex("TenDonvi")).toString();
 
             boolean rowExists = false;
+            int rowIndexToUpdate = -1;
 
             // Kiểm tra nếu đã có sản phẩm và kích thước
             for (int i = 0; i < modelJTable1.getRowCount(); i++) {
@@ -174,23 +179,23 @@ public class QuanLyBanHangJPanel extends javax.swing.JPanel {
 
                 if (existingProductId.equals(productId) && existingSize.equals(size)) {
                     rowExists = true;
+                    rowIndexToUpdate = i;
                     break;
                 }
             }
 
             if (rowExists) {
-                // Hiển thị thông báo lỗi
-                javax.swing.JOptionPane.showMessageDialog(
-                        QuanLyBanHangJPanel.this,
-                        "Sản phẩm và kích thước đã tồn tại trong bảng. Vui lòng thay đổi kích thước hoặc sản phẩm!",
-                        "Lỗi",
-                        javax.swing.JOptionPane.ERROR_MESSAGE
-                );
+                // Nếu đã tồn tại, cập nhật số lượng
+                int currentQuantity = Integer.parseInt(modelJTable1.getValueAt(rowIndexToUpdate, quantityIndex).toString());
+                int newQuantity = currentQuantity + 1; // Tăng số lượng lên 1
+                modelJTable1.setValueAt(newQuantity, rowIndexToUpdate, quantityIndex);
             } else {
+                // Nếu chưa tồn tại, thêm hàng mới
                 modelJTable1.addRow(rowData);
-                updateTotalAmount(); // Gọi phương thức tính tổng ngay sau khi cập nhật giá trị
-                updateTotalQuantity(); // Cập nhật tổng số lượng sau khi thêm hàng
             }
+
+            updateTotalAmount(); // Gọi phương thức tính tổng ngay sau khi cập nhật giá trị
+            updateTotalQuantity(); // Cập nhật tổng số lượng sau khi thêm hoặc cập nhật hàng
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -598,9 +603,9 @@ public class QuanLyBanHangJPanel extends javax.swing.JPanel {
                         .addComponent(btnHuydon, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel13)
-                        .addGap(26, 26, 26)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(23, 23, 23))))
+                        .addGap(37, 37, 37))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -634,12 +639,11 @@ public class QuanLyBanHangJPanel extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel13)
-                        .addComponent(btnThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnHuydon, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(btnThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnHuydon, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12))
         );
 
@@ -684,13 +688,42 @@ public class QuanLyBanHangJPanel extends javax.swing.JPanel {
 
     private void btnHuydonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuydonActionPerformed
         // TODO add your handling code here: 
+        // Lấy chỉ số của hàng được chọn trong jTable1
+        int selectedRow = jTable1.getSelectedRow();
+
+        // Kiểm tra nếu có hàng nào được chọn
+        if (selectedRow != -1) {
+            // Xóa hàng được chọn khỏi mô hình bảng
+            modelJTable1.removeRow(selectedRow);
+
+            // Cập nhật tổng số lượng và tổng tiền sau khi xóa hàng
+            updateTotalQuantity();
+            updateTotalAmount();
+
+            // Thông báo cho người dùng biết hàng đã được xóa
+            JOptionPane.showMessageDialog(this, "Hàng đã được xóa thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            // Thông báo nếu không có hàng nào được chọn
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một hàng để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnHuydonActionPerformed
+
+    private ThanhToan thanhToanFrame;
 
     private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThanhToanActionPerformed
         // TODO add your handling code here:
+        // Kiểm tra xem ID nhân viên đã được nhập chưa
+        String ghiChu = txtghichu.getText().trim();
+        String idNhanVien = txtNhanVien.getText().trim();
+
+        // Kiểm tra nếu ID nhân viên trống
+        if (idNhanVien.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Bạn phải nhập ID nhân viên trước khi thanh toán hóa đơn!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return; // Dừng thực hiện nếu chưa nhập ID nhân viên
+        }
         if (isAllFieldsFilled()) {
             try {
-                ThanhToan thanhToanFrame = new ThanhToan();
+                thanhToanFrame = new ThanhToan();
 
                 StringBuilder sanPhamBuilder = new StringBuilder();
                 StringBuilder tienHangBuilder = new StringBuilder();
@@ -730,6 +763,16 @@ public class QuanLyBanHangJPanel extends javax.swing.JPanel {
                 thanhToanFrame.getLblGhichu().setText(txtghichu.getText());
 
                 thanhToanFrame.setVisible(true);
+
+                // Sau khi thanh toán thành công, đóng cửa sổ thanh toán và xóa dữ liệu
+                thanhToanFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                        clearTableData(); // Xóa dữ liệu trong bảng jTable1
+                        clearInputFields(); // Xóa dữ liệu trên các trường nhập liệu
+                    }
+                });
+
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi hiển thị giao diện thanh toán: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -738,6 +781,17 @@ public class QuanLyBanHangJPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnThanhToanActionPerformed
+
+    private void clearInputFields() {
+        txtSoluong.setText("");
+        txttienKhachTra.setText("");
+        txttienThoi.setText("");
+        txtghichu.setText("");
+        lblTongTien.setText("");
+        txtNhanVien.setText("");
+
+        // Xóa dữ liệu các trường nhập liệu khác nếu cần
+    }
 
     private boolean isAllFieldsFilled() {
         // Add checks for each required field. Here is an example:
