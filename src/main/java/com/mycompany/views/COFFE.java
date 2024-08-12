@@ -1,13 +1,13 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
-package com.mycompany.cafen6;
+package com.mycompany.views;
 
 /**
  *
- * @author Admin
+ * @author ASUS
  */
-public class CAFEN6 {
+public class COFFE {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
