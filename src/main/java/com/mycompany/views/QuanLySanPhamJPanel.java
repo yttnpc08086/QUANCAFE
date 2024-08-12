@@ -5,18 +5,14 @@
 package com.mycompany.views;
 
 import com.mycompany.Helper.ConnectUtil;
-import java.io.File;
 import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableRowSorter;
 
 /**
@@ -40,21 +36,21 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     private void initializeTableModels() {
         modelSanPhansd = (DefaultTableModel) tblSanPhansd.getModel();
         modelSanPHamksd = (DefaultTableModel) tblSanPHamksd.getModel();
-        modelSanPhansd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Loại"});
-        modelSanPHamksd.setColumnIdentifiers(new Object[]{"ID", "Tên Sản Phẩm", "Giá", "Loại"});
+        modelSanPhansd.setColumnIdentifiers(new Object[]{"ID_Sanpham", "Tên Sản Phẩm", "Giá", "Loại", "Trạng thái"});
+        modelSanPHamksd.setColumnIdentifiers(new Object[]{"ID_Sanpham", "Tên Sản Phẩm", "Giá", "Loại", "Trạng thái"});
     }
 
     private void loadSanPhamData() {
         try {
-            // Load data for tblSanPhansd (active products)
+            // Load data for active products (tblSanPhansd)
             String querySanPhansd = "SELECT * FROM SanPham WHERE Trangthai = 1"; // Active products
             ResultSet rsSanPhansd = ConnectUtil.query(querySanPhansd);
-            populateTable(modelSanPhansd, rsSanPhansd);
+            populateTable((DefaultTableModel) tblSanPhansd.getModel(), rsSanPhansd);
 
-            // Load data for tblSanPHamksd (inactive products)
+            // Load data for inactive products (tblSanPHamksd)
             String querySanPHamksd = "SELECT * FROM SanPham WHERE Trangthai = 0"; // Inactive products
             ResultSet rsSanPHamksd = ConnectUtil.query(querySanPHamksd);
-            populateTable(modelSanPHamksd, rsSanPHamksd);
+            populateTable((DefaultTableModel) tblSanPHamksd.getModel(), rsSanPHamksd);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -68,8 +64,8 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
                 rs.getString("ID_Sanpham"),
                 rs.getString("TenSP"),
                 rs.getInt("Gia"),
-                //                rs.getString("ID_SoLuongSP"),
-                rs.getString("ID_LoaiSP")
+                rs.getString("ID_LoaiSP"),
+                rs.getString("Trangthai"), // Assuming you also want to display the status
             });
         }
     }
@@ -137,11 +133,8 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         txtTenSP = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
-        lblHinh = new javax.swing.JLabel();
         txtGia = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         rdoksd = new javax.swing.JRadioButton();
         rdosd = new javax.swing.JRadioButton();
@@ -152,7 +145,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         btnloaidouong = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtDoUong = new javax.swing.JTextField();
-        txtSoLuong = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(241, 241, 241));
 
@@ -175,7 +167,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Mã SP", "Tên sản phẩm ", "Loại đồ uống ", "Giá", "Số lượng", "Trạng thái", "Hinh"
+                "Mã SP", "Tên sản phẩm ", "Loại đồ uống ", "Giá", "Trạng thái"
             }
         ));
         tblSanPhansd.setPreferredSize(new java.awt.Dimension(1000, 200));
@@ -191,14 +183,12 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1054, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 979, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 16, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
         );
 
         tabs.addTab("Sản Phẩm sử dụng", jPanel2);
@@ -212,7 +202,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Tên sản phẩm", "Loại đồ uống ", "Giá", "Số lượng", "Trạng thái"
+                "Tên sản phẩm", "Loại đồ uống ", "Giá", "Trạng thái"
             }
         ));
         tblSanPHamksd.setPreferredSize(new java.awt.Dimension(1000, 200));
@@ -229,17 +219,19 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1018, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 42, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         tabs.addTab("Sản Phẩm không sử dụng", jPanel3);
 
         jPanel1.add(tabs);
-        tabs.setBounds(10, 450, 1060, 220);
+        tabs.setBounds(10, 460, 980, 240);
 
         jPanel4.setBackground(new java.awt.Color(241, 241, 241));
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.MatteBorder(null), "Tìm kiếm(Tên hoặc Mã)", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
@@ -268,12 +260,12 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         );
 
         jPanel1.add(jPanel4);
-        jPanel4.setBounds(10, 370, 499, 58);
+        jPanel4.setBounds(20, 380, 0, 0);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setText("Mã sản phẩm");
         jPanel1.add(jLabel2);
-        jLabel2.setBounds(310, 130, 100, 17);
+        jLabel2.setBounds(100, 90, 100, 17);
 
         txtMaSP.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         txtMaSP.addActionListener(new java.awt.event.ActionListener() {
@@ -282,12 +274,12 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(txtMaSP);
-        txtMaSP.setBounds(310, 150, 228, 30);
+        txtMaSP.setBounds(100, 120, 290, 30);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel3.setText("Tên sản phẩm");
         jPanel1.add(jLabel3);
-        jLabel3.setBounds(310, 220, 120, 17);
+        jLabel3.setBounds(100, 180, 120, 17);
 
         txtTenSP.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         txtTenSP.addActionListener(new java.awt.event.ActionListener() {
@@ -301,76 +293,39 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(txtTenSP);
-        txtTenSP.setBounds(310, 240, 228, 30);
+        txtTenSP.setBounds(100, 210, 290, 30);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel4.setText("Loại đồ uống");
         jPanel1.add(jLabel4);
-        jLabel4.setBounds(310, 310, 110, 17);
-
-        jPanel5.setBackground(new java.awt.Color(241, 241, 241));
-
-        lblHinh.setBackground(new java.awt.Color(204, 204, 255));
-        lblHinh.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblHinh.setText("      Click To Donwload Image");
-        lblHinh.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        lblHinh.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblHinhMouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblHinh, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(7, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblHinh, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(10, Short.MAX_VALUE))
-        );
-
-        jPanel1.add(jPanel5);
-        jPanel5.setBounds(20, 60, 210, 240);
+        jLabel4.setBounds(100, 270, 110, 17);
 
         txtGia.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jPanel1.add(txtGia);
-        txtGia.setBounds(600, 330, 230, 30);
+        txtGia.setBounds(510, 130, 230, 30);
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Giá");
         jPanel1.add(jLabel5);
-        jLabel5.setBounds(600, 310, 60, 17);
-
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel6.setText("Số lượng:");
-        jPanel1.add(jLabel6);
-        jLabel6.setBounds(600, 130, 70, 17);
+        jLabel5.setBounds(510, 100, 60, 17);
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Trạng thái");
         jPanel1.add(jLabel7);
-        jLabel7.setBounds(600, 220, 100, 17);
+        jLabel7.setBounds(520, 200, 100, 17);
 
         rdoksd.setBackground(new java.awt.Color(241, 241, 241));
         buttonGroup1.add(rdoksd);
         rdoksd.setText("Không sử dụng");
         jPanel1.add(rdoksd);
-        rdoksd.setBounds(600, 240, 110, 21);
+        rdoksd.setBounds(510, 230, 110, 21);
 
         rdosd.setBackground(new java.awt.Color(241, 241, 241));
         buttonGroup1.add(rdosd);
         rdosd.setSelected(true);
         rdosd.setText("Sử dụng");
         jPanel1.add(rdosd);
-        rdosd.setBounds(720, 240, 90, 21);
+        rdosd.setBounds(630, 230, 90, 21);
 
         btnThem.setFont(new java.awt.Font("Cambria", 0, 18)); // NOI18N
         btnThem.setText("Thêm");
@@ -381,7 +336,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnThem);
-        btnThem.setBounds(880, 150, 101, 34);
+        btnThem.setBounds(790, 140, 101, 34);
 
         btnXoa.setFont(new java.awt.Font("Cambria", 0, 18)); // NOI18N
         btnXoa.setText("Xóa");
@@ -392,7 +347,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnXoa);
-        btnXoa.setBounds(880, 260, 101, 34);
+        btnXoa.setBounds(790, 240, 101, 34);
 
         btnSua.setFont(new java.awt.Font("Cambria", 0, 18)); // NOI18N
         btnSua.setText("Sửa");
@@ -402,7 +357,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnSua);
-        btnSua.setBounds(880, 200, 101, 34);
+        btnSua.setBounds(790, 190, 101, 34);
 
         btnLamMoi.setFont(new java.awt.Font("Cambria", 0, 18)); // NOI18N
         btnLamMoi.setText("Làm mới");
@@ -412,7 +367,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnLamMoi);
-        btnLamMoi.setBounds(880, 320, 99, 34);
+        btnLamMoi.setBounds(790, 300, 99, 34);
 
         btnloaidouong.setBackground(new java.awt.Color(225, 193, 144));
         btnloaidouong.setText("+");
@@ -422,7 +377,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnloaidouong);
-        btnloaidouong.setBounds(310, 330, 30, 30);
+        btnloaidouong.setBounds(100, 300, 30, 30);
 
         jLabel1.setBackground(new java.awt.Color(255, 102, 0));
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
@@ -431,15 +386,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         jPanel1.add(jLabel1);
         jLabel1.setBounds(330, 20, 380, 44);
         jPanel1.add(txtDoUong);
-        txtDoUong.setBounds(340, 330, 200, 30);
-
-        txtSoLuong.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtSoLuongActionPerformed(evt);
-            }
-        });
-        jPanel1.add(txtSoLuong);
-        txtSoLuong.setBounds(600, 152, 230, 30);
+        txtDoUong.setBounds(130, 300, 260, 30);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -458,57 +405,48 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblSanPhansdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSanPhansdMouseClicked
-        // TODO add your handling code here:
-        int row = tblSanPhansd.getSelectedRow();
-        if (row >= 0) {
-            txtMaSP.setText(tblSanPhansd.getValueAt(row, 0).toString());
-            txtTenSP.setText(tblSanPhansd.getValueAt(row, 1).toString());
+        if (tabs.getSelectedIndex() == 0) {
+            int row = tblSanPhansd.getSelectedRow();
+            if (row >= 0) {
+                // Retrieve data from the selected row
+                String maSP = tblSanPhansd.getValueAt(row, 0).toString();
+                String tenSP = tblSanPhansd.getValueAt(row, 1).toString();
+                String gia = tblSanPhansd.getValueAt(row, 2).toString();
+                String loai = tblSanPhansd.getValueAt(row, 3).toString();
+                String status = tblSanPhansd.getValueAt(row, 4).toString().trim();
 
-            // Assume txtDoUong is a JTextField instead of JComboBox
-            String doUongValue = tblSanPhansd.getValueAt(row, 4).toString().trim();
-            txtDoUong.setText(doUongValue);
+                // Set values in input fields
+                txtMaSP.setText(maSP);
+                txtTenSP.setText(tenSP);
+                txtGia.setText(gia);
+                txtDoUong.setText(loai);
 
-            // Assume txtDV is also a JTextField
-            String dvValue = tblSanPhansd.getValueAt(row, 3).toString().trim();
-            txtSoLuong.setText(dvValue);
-
-            txtGia.setText(tblSanPhansd.getValueAt(row, 2).toString());
-
-            String status = tblSanPhansd.getValueAt(row, 5).toString().trim();
-            if (status.equals("Sử dụng")) {
-                rdosd.setSelected(true);
-            } else {
-                rdoksd.setSelected(true);
+                if (status.equals("Sử dụng")) {
+                    rdosd.setSelected(true);
+                    rdoksd.setSelected(false);
+                } else {
+                    rdosd.setSelected(true);
+                    rdoksd.setSelected(false);
+                }
             }
         }
     }//GEN-LAST:event_tblSanPhansdMouseClicked
 
     private void tblSanPHamksdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSanPHamksdMouseClicked
-        // TODO add your handling code here:
-        int selectedRow = tblSanPHamksd.getSelectedRow();
 
-        // If a valid row is selected
-        if (selectedRow != -1) {
-            // Assuming the table model is set up in a way that matches the database columns
-            String maSP = tblSanPHamksd.getValueAt(selectedRow, 0).toString();
-            String tenSP = tblSanPHamksd.getValueAt(selectedRow, 1).toString();
-            int gia = Integer.parseInt(tblSanPHamksd.getValueAt(selectedRow, 2).toString());
-            String soluong = tblSanPHamksd.getValueAt(selectedRow, 3).toString();
-            String loai = tblSanPHamksd.getValueAt(selectedRow, 4).toString();
-            int trangThai = Integer.parseInt(tblSanPHamksd.getValueAt(selectedRow, 5).toString());
-
-            // Set these values into the form fields
-            txtMaSP.setText(maSP);
-            txtTenSP.setText(tenSP);
-            txtGia.setText(String.valueOf(gia));
-            txtSoLuong.setText(soluong);
-            txtDoUong.setText(loai);
-
-            // Set radio button status
-            if (trangThai == 1) {
-                rdosd.setSelected(true);
-            } else {
-                rdoksd.setSelected(true);
+        if (tabs.getSelectedIndex() == 1) { // Ensure you are in the "Sản Phẩm không sử dụng" tab
+            int row = tblSanPHamksd.getSelectedRow();
+            if (row >= 0) {
+                txtMaSP.setText(tblSanPHamksd.getValueAt(row, 0).toString());
+                txtTenSP.setText(tblSanPHamksd.getValueAt(row, 1).toString());
+                txtGia.setText(tblSanPHamksd.getValueAt(row, 2).toString());
+                txtDoUong.setText(tblSanPHamksd.getValueAt(row, 3).toString());
+                String status = tblSanPHamksd.getValueAt(row, 4).toString().trim();
+                if (status.equals("Sử dụng")) {
+                    rdosd.setSelected(false);
+                } else {
+                    rdoksd.setSelected(true);
+                }
             }
         }
     }//GEN-LAST:event_tblSanPHamksdMouseClicked
@@ -518,7 +456,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_tabsMouseClicked
 
     private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
-        // TODO add your handling code here:
         String searchText = txtTimKiem.getText().trim();
         filterTableByProductCode(searchText);
     }
@@ -528,8 +465,8 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(model);
         tblSanPhansd.setRowSorter(tr);
 
-        // Sử dụng RowFilter để lọc theo mã sản phẩm (ID_Sanpham)
-        tr.setRowFilter(RowFilter.regexFilter("(?i)" + productCode, 0)); // Cột 0 là cột chứa mã sản phẩm
+        // Apply RowFilter to filter by product ID (assuming column 0 is the product ID)
+        tr.setRowFilter(RowFilter.regexFilter("(?i)" + productCode, 0)); // Adjust column index if necessary
     }//GEN-LAST:event_txtTimKiemKeyReleased
 
     private void txtTenSPKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTenSPKeyReleased
@@ -537,54 +474,30 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         String maSP = txtMaSP.getText();
         String tenSP = txtTenSP.getText();
         int gia = Integer.parseInt(txtGia.getText());
-        String soluong = txtSoLuong.getText();
         String loai = txtDoUong.getText();
         int trangThai = rdosd.isSelected() ? 1 : 0;
 
         // Update the product name in the database (assuming ConnectUtil.update() is your method for DB operations)
-        String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_SoLuongSP = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
+        String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
         try {
-            ConnectUtil.update(query, tenSP, gia, soluong, loai, trangThai, maSP);
-            JOptionPane.showMessageDialog(this, "Sửa tên sản phẩm thành công!");
-            loadSanPhamData(); // Refresh the table data
+            ConnectUtil.update(query, tenSP, gia, loai, trangThai, maSP);
+//            JOptionPane.showMessageDialog(this, "Sửa tên sản phẩm thành công!");
+            loadSanPhamData();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi sửa tên sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_txtTenSPKeyReleased
 
-    private void lblHinhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHinhMouseClicked
-        // TODO add your handling code here:
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Chọn hình ảnh");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Image files", "jpg", "jpeg", "png", "gif"));
-
-        int result = fileChooser.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            // Lấy tệp đã chọn
-            File selectedFile = fileChooser.getSelectedFile();
-
-            // Hiển thị hình ảnh trong JLabel
-            ImageIcon imageIcon = new ImageIcon(selectedFile.getPath());
-            lblHinh.setIcon(imageIcon);
-
-            // Lưu đường dẫn hình ảnh (nếu cần)
-            String imagePath = selectedFile.getAbsolutePath();
-            // Bạn có thể lưu đường dẫn này vào cơ sở dữ liệu hoặc biến nào đó để sử dụng sau này
-        }
-    }//GEN-LAST:event_lblHinhMouseClicked
-
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        // TODO add your handling code here:
         String maSP = txtMaSP.getText().trim();
         String tenSP = txtTenSP.getText().trim();
         String giaStr = txtGia.getText().trim();
-        String soluong = txtSoLuong.getText().trim();
-        String loai = txtDoUong.getText().trim();
-        int trangThai = rdosd.isSelected() ? 1 : 0;
+        String loaiSP = txtDoUong.getText().trim();
+        int trangThai = rdosd.isSelected() ? 1 : 0; // 1 for "Sử dụng", 0 for "Không sử dụng"
 
         // Input validation
-        if (maSP.isEmpty() || tenSP.isEmpty() || giaStr.isEmpty() || soluong.isEmpty() || loai.isEmpty()) {
+        if (maSP.isEmpty() || tenSP.isEmpty() || giaStr.isEmpty() || loaiSP.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -592,21 +505,43 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         int gia;
         try {
             gia = Integer.parseInt(giaStr);
+            if (gia <= 0) {
+                JOptionPane.showMessageDialog(this, "Giá phải là một số dương.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Giá phải là một số hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Adding to the database
-        String query = "INSERT INTO SanPham (ID_Sanpham, TenSP, Gia, ID_SoLuongSP, ID_LoaiSP, Trangthai) VALUES (?, ?, ?, ?, ?, ?)";
+        // Prepare SQL query for insertion
+        String query = "INSERT INTO SanPham (ID_Sanpham, TenSP, Gia, ID_LoaiSP, Trangthai) VALUES (?, ?, ?, ?, ?)";
         try {
-            ConnectUtil.update(query, maSP, tenSP, gia, soluong, loai, trangThai);
-            JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
-            loadSanPhamData(); // Reload the table data
+            // Execute database update
+            int rowsAffected = ConnectUtil.update(query, maSP, tenSP, gia, loaiSP, trangThai);
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
+
+                // Clear input fields after successful insertion
+                txtMaSP.setText("");
+                txtTenSP.setText("");
+                txtGia.setText("");
+                txtDoUong.setText("");
+                rdosd.setSelected(true); // Reset to default (Sử dụng)
+                rdoksd.setSelected(false);
+
+                // Refresh the table data
+                loadSanPhamData();
+            } else {
+                JOptionPane.showMessageDialog(this, "Không có dòng nào được thêm. Kiểm tra lại dữ liệu đầu vào.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (Exception e) {
+            // Handle any other exceptions
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi thêm sản phẩm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Lỗi không xác định khi thêm sản phẩm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+        // Handle SQL specific exceptions
+
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
@@ -626,63 +561,54 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Lỗi khi xóa sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
+            txtMaSP.setText("");
+            txtTenSP.setText("");
+            txtDoUong.setText(""); // Assuming txtLoai is a JTextField for product type
+            txtGia.setText("");
+            rdosd.setSelected(true);
+            loadSanPhamData();
         }
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
-        // TODO add your handling code here:
-        String maSP = txtMaSP.getText().trim();
-        String tenSP = txtTenSP.getText().trim();
-        String giaStr = txtGia.getText().trim();
-        String soluong = txtSoLuong.getText().trim();
-        String loai = txtDoUong.getText().trim();
-        int trangThai = rdosd.isSelected() ? 1 : 0;
+        String maSP = txtMaSP.getText().trim();  // Product code
+        String tenSP = txtTenSP.getText().trim();  // New product name
+        int trangThai = rdosd.isSelected() ? 1 : 0;  // 1 for Active, 0 for Inactive
 
-        // Input validation
-        if (maSP.isEmpty() || tenSP.isEmpty() || giaStr.isEmpty() || soluong.isEmpty() || loai.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (tenSP.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        int gia;
+        String query = "UPDATE SanPham SET TenSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
         try {
-            gia = Integer.parseInt(giaStr);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Giá phải là một số hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+            // Execute the update
+            int rowsAffected = ConnectUtil.update(query, tenSP, trangThai, maSP);
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Sửa tên sản phẩm thành công!");
 
-        // Update the database
-        String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_DonviSP = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
-        try {
-            ConnectUtil.update(query, tenSP, gia, soluong, loai, trangThai, maSP);
-            JOptionPane.showMessageDialog(this, "Sửa sản phẩm thành công!");
-            loadSanPhamData(); // Refresh the table data
+//                // Clear input fields after successful update
+//                txtMaSP.setText("");  // Clear the product code field
+//                txtTenSP.setText("");  // Clear the product name field
+                // Refresh the table data
+                loadSanPhamData();
+            } else {
+                JOptionPane.showMessageDialog(this, "Không có dòng nào được cập nhật. Kiểm tra lại mã sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (Exception e) {
+            // Handle any other exceptions
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi sửa sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Lỗi không xác định khi sửa tên sản phẩm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+        txtMaSP.setText("");
+        txtTenSP.setText("");
+        txtDoUong.setText(""); // Assuming txtLoai is a JTextField for product type
+        txtGia.setText("");
+        rdosd.setSelected(true);
+        loadSanPhamData();
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void txtTenSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTenSPActionPerformed
-        // TODO add your handling code here:
-        String maSP = txtMaSP.getText();
-        String tenSP = txtTenSP.getText();
-        int gia = Integer.parseInt(txtGia.getText());
-        String soluong = txtSoLuong.getText();
-        String loai = txtDoUong.getText();
-        int trangThai = rdosd.isSelected() ? 1 : 0;
 
-        // Update the product name in the database (assuming ConnectUtil.update() is your method for DB operations)
-        String query = "UPDATE SanPham SET TenSP = ?, Gia = ?, ID_SoLuongSP = ?, ID_LoaiSP = ?, Trangthai = ? WHERE ID_Sanpham = ?";
-        try {
-            ConnectUtil.update(query, tenSP, gia, soluong, loai, trangThai, maSP);
-            JOptionPane.showMessageDialog(this, "Sửa tên sản phẩm thành công!");
-            loadSanPhamData(); // Refresh the table data
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi sửa tên sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
     }//GEN-LAST:event_txtTenSPActionPerformed
 
     private void btnloaidouongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnloaidouongActionPerformed
@@ -710,7 +636,7 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         }
 
         // Query the database to retrieve product details
-        String query = "SELECT TenSP, Gia, ID_SoLuongSP, ID_LoaiSP, Trangthai FROM SanPham WHERE ID_Sanpham = ?";
+        String query = "SELECT TenSP, Gia, ID_LoaiSP, Trangthai FROM SanPham WHERE ID_Sanpham = ?";
         try {
             // Assuming ConnectUtil.query() returns a ResultSet or a similar object
             ResultSet rs = ConnectUtil.query(query, maSP);
@@ -719,13 +645,11 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
                 // Populate the form fields with the retrieved data
                 String tenSP = rs.getString("TenSP");
                 int gia = rs.getInt("Gia");
-                String soluong = rs.getString("ID_SoLuongSP");
                 String loai = rs.getString("ID_LoaiSP");
                 int trangThai = rs.getInt("Trangthai");
 
                 txtTenSP.setText(tenSP);
                 txtGia.setText(String.valueOf(gia));
-                txtSoLuong.setText(soluong);
                 txtDoUong.setText(loai);
                 if (trangThai == 1) {
                     rdosd.setSelected(true);
@@ -747,27 +671,9 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
         txtTenSP.setText("");
         txtDoUong.setText(""); // Assuming txtLoai is a JTextField for product type
         txtGia.setText("");
-        txtSoLuong.setText(""); // Assuming txtDonVi is a JTextField for unit
         rdosd.setSelected(true);
         loadSanPhamData(); // Tải lại dữ liệu bảng
     }//GEN-LAST:event_btnLamMoiActionPerformed
-
-    private void txtSoLuongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSoLuongActionPerformed
-        // TODO add your handling code here:
-        String soLuongText = txtSoLuong.getText();
-
-        // Check if the entered value is a number
-        try {
-            int soLuong = Integer.parseInt(soLuongText);
-            if (soLuong < 0) {
-                JOptionPane.showMessageDialog(this, "Số lượng không thể nhỏ hơn 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                txtSoLuong.setText(""); // Clear the field if the value is invalid
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            txtSoLuong.setText(""); // Clear the field if the value is not a number
-        }
-    }//GEN-LAST:event_txtSoLuongActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLamMoi;
@@ -781,16 +687,13 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lblHinh;
     private javax.swing.JRadioButton rdoksd;
     private javax.swing.JRadioButton rdosd;
     private javax.swing.JTabbedPane tabs;
@@ -799,7 +702,6 @@ public class QuanLySanPhamJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtDoUong;
     private javax.swing.JTextField txtGia;
     private javax.swing.JTextField txtMaSP;
-    private javax.swing.JTextField txtSoLuong;
     private javax.swing.JTextField txtTenSP;
     private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables

@@ -18,9 +18,13 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -108,21 +112,32 @@ public class ThongKeJPanel extends javax.swing.JPanel {
     private void loadDataToTable() {
         try {
             DefaultTableModel modelDaBan = (DefaultTableModel) tblbang.getModel();
-            modelDaBan.setRowCount(0); // Clear existing data
-            String sql = "SELECT TenSanPham, SoLuongDaBan, TongTienDaBan, SoLuongDaHuy, TongTienDaHuy, NgayThanhToan FROM ThongKe";
-            ResultSet rs = ConnectUtil.query(sql);
+            modelDaBan.setRowCount(0); // Xóa dữ liệu hiện có trong bảng
+
+            // Câu lệnh SQL để lấy dữ liệu từ các bảng SanPham, HoaDonChiTiet, và HoaDon
+            String sql = "SELECT sp.TenSP AS TenSanPham, "
+                    + "SUM(hdct.Soluong) AS SoLuongDaBan, "
+                    + "SUM(hdct.TongGia) AS TongTien, "
+                    + "hd.Ngaytao AS NgayThanhToan "
+                    + "FROM HoaDonChiTiet hdct "
+                    + "JOIN HoaDon hd ON hdct.ID_HoaDon = hd.ID_Hoadon "
+                    + "JOIN SanPham sp ON hdct.ID_SanPham = sp.ID_SanPham "
+                    + "GROUP BY sp.TenSP, hd.Ngaytao";
+
+            PreparedStatement pstmt = ConnectUtil.getConnection().prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                // Add data to table
+                // Thêm dữ liệu vào bảng
                 Object[] rowDaBan = {
                     rs.getString("TenSanPham"),
                     rs.getInt("SoLuongDaBan"),
-                    rs.getInt("TongTienDaBan"),
+                    rs.getInt("TongTien"),
                     rs.getDate("NgayThanhToan")
                 };
                 modelDaBan.addRow(rowDaBan);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -314,10 +329,10 @@ public class ThongKeJPanel extends javax.swing.JPanel {
                                 .addComponent(jLabel3)
                                 .addGap(62, 62, 62))
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(68, 68, 68)
-                                .addComponent(DateTuNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(14, 14, 14)
+                                .addComponent(DateTuNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(DateDenNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(DateDenNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(42, 42, 42))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(170, 170, 170)
@@ -410,16 +425,18 @@ public class ThongKeJPanel extends javax.swing.JPanel {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
     private void exportToExcel(File file) {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheetBang = workbook.createSheet("Doanh thu sản phẩm");
-        Sheet sheetBangHuy = workbook.createSheet("Đơn hủy theo nhân viên");
+        Sheet sheetPanel = workbook.createSheet("Thông tin khác");
 
         // Xuất dữ liệu từ tblbang
         exportTableToSheet(tblbang, sheetBang);
 
-        // Xuất dữ liệu từ tblbanghuy
-//        exportTableToSheet(tblbanghuy, sheetBangHuy);
+        // Xuất dữ liệu từ jPanel4
+        exportPanelToSheet(jPanel4, sheetPanel);
+
         // Lưu file Excel vào máy
         try (FileOutputStream fileOut = new FileOutputStream(file)) {
             workbook.write(fileOut);
@@ -433,6 +450,7 @@ public class ThongKeJPanel extends javax.swing.JPanel {
 
     private void exportTableToSheet(javax.swing.JTable table, Sheet sheet) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
+        Workbook workbook = sheet.getWorkbook();
 
         // Tạo tiêu đề cột
         Row headerRow = sheet.createRow(0);
@@ -440,17 +458,48 @@ public class ThongKeJPanel extends javax.swing.JPanel {
             headerRow.createCell(i).setCellValue(model.getColumnName(i));
         }
 
+        // Tạo kiểu định dạng số
+        CellStyle numberCellStyle = workbook.createCellStyle();
+        DataFormat format = workbook.createDataFormat();
+        numberCellStyle.setDataFormat(format.getFormat("#,##0")); // Định dạng số
+
         // Tạo dữ liệu bảng
         for (int i = 0; i < model.getRowCount(); i++) {
             Row row = sheet.createRow(i + 1);
             for (int j = 0; j < model.getColumnCount(); j++) {
-                row.createCell(j).setCellValue(model.getValueAt(i, j).toString());
+                Object value = model.getValueAt(i, j);
+                if (value instanceof Number) {
+                    Cell cell = row.createCell(j);
+                    cell.setCellValue(((Number) value).doubleValue());
+                    cell.setCellStyle(numberCellStyle);
+                } else {
+                    row.createCell(j).setCellValue(value.toString());
+                }
             }
         }
         for (int i = 0; i < model.getColumnCount(); i++) {
             sheet.autoSizeColumn(i);
         }
     }
+
+    private void exportPanelToSheet(JPanel panel, Sheet sheet) {
+        Workbook workbook = sheet.getWorkbook();
+        int rowIndex = 0;
+
+        for (java.awt.Component component : panel.getComponents()) {
+            if (component instanceof javax.swing.JLabel) {
+                javax.swing.JLabel label = (javax.swing.JLabel) component;
+                Row row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(label.getText());
+            } else if (component instanceof javax.swing.JTextField) {
+                javax.swing.JTextField textField = (javax.swing.JTextField) component;
+                Row row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(textField.getText());
+            }
+            // Thêm điều kiện khác nếu cần
+        }
+    }
+
 
     private void btnInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInActionPerformed
         JFileChooser fileChooser = new JFileChooser();
@@ -489,9 +538,11 @@ public class ThongKeJPanel extends javax.swing.JPanel {
             String tuNgay = sdf.format(DateTuNgay.getDate());
             String denNgay = sdf.format(DateDenNgay.getDate());
 
-            String sql = "SELECT SUM(TongTienDaBan) AS TongTien, SUM(SoLuongDaBan) AS TongSoLuong "
-                    + "FROM ThongKe "
-                    + "WHERE NgayThanhToan BETWEEN ? AND ?";
+            String sql = "SELECT SUM(hdct.TongGia) AS TongTien, "
+                    + "SUM(hdct.Soluong) AS TongSoLuong "
+                    + "FROM HoaDonChiTiet hdct "
+                    + "JOIN HoaDon hd ON hdct.ID_HoaDon = hd.ID_Hoadon "
+                    + "WHERE hd.Ngaytao BETWEEN ? AND ?";
 
             PreparedStatement pstmt = ConnectUtil.getConnection().prepareStatement(sql);
             pstmt.setString(1, tuNgay);
