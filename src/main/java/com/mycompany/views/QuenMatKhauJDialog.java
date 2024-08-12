@@ -204,11 +204,12 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
             txtMaxacnhan.setText("");
             txtMaxacnhan.requestFocus();
         } else {
-            String code = txtMaxacnhan.getText().trim();
-            String newPassword = MsgBox.promt(this, "Nhập mật khẩu mới:");
-            String email = txtEmail.getText();
+
             if (verificationCode != null && !verificationCode.isExpired()) {
+                String code = txtMaxacnhan.getText().trim();
                 if (code.equals(verificationCode.getCode())) {
+                    String newPassword = MsgBox.promt(this, "Nhập mật khẩu mới:");
+                    String email = txtEmail.getText();
                     if (newPassword != null && !newPassword.isEmpty()) {
                         String updateResult = NhanVienDAO.updatePass(email, newPassword);
                         if (updateResult.equals("Password updated successfully!")) {

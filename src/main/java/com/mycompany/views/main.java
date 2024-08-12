@@ -403,7 +403,7 @@ public class main extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
@@ -445,6 +445,11 @@ public class main extends javax.swing.JFrame {
         jMenu1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jMenu1.setText("Tài Khoản");
         jMenu1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jMenu1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu1ActionPerformed(evt);
+            }
+        });
 
         menuDangXuat.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         menuDangXuat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-password.png"))); // NOI18N
@@ -639,6 +644,10 @@ public class main extends javax.swing.JFrame {
             dangNhapFrame.setVisible(true);
         }
     }//GEN-LAST:event_menuDangXuatActionPerformed
+
+    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
+
+    }//GEN-LAST:event_jMenu1ActionPerformed
 
     /**
      * @param args the command line arguments
